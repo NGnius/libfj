@@ -3,6 +3,7 @@ name = "libfj"
 version = "0.1.0"
 authors = ["NGnius (Graham) <ngniusness@gmail.com>"]
 edition = "2018"
+description = "An unofficial collection of APIs used in FreeJam games and mods"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -1,7 +1,6 @@
 use libfj::cardlife;
 
 #[test]
-#[allow(unused_variables)]
 fn clre_server_init() -> Result<(), ()> {
     assert!(cardlife::CLreServer::new("http://localhost:5030").is_ok());
     Ok(())

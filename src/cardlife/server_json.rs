@@ -24,7 +24,7 @@ pub struct GameInfo {
 
 impl std::string::ToString for GameInfo {
     fn to_string(&self) -> String {
-        format!("{} ({})", self.world_name, self.game_guid)
+        format!("{} ({})", &self.world_name, &self.game_guid)
     }
 }
 
@@ -58,6 +58,6 @@ pub struct PlayerStatusInfo {
 
 impl std::string::ToString for PlayerStatusInfo {
     fn to_string(&self) -> String {
-        format!("{} ({})", self.name, self.id)
+        format!("{} ({})", &self.name, &self.id)
     }
 }
