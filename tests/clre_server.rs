@@ -6,7 +6,7 @@ fn clre_server_init() -> Result<(), ()> {
     Ok(())
 }
 
-#[tokio::test]
+/*#[tokio::test]
 async fn clre_server_game() -> Result<(), ()> {
     let server = cardlife::CLreServer::new("http://localhost:5030").unwrap();
     let result = server.game_info().await;
@@ -36,4 +36,4 @@ async fn clre_server_status() -> Result<(), ()> {
         }
     }
     Ok(())
-}
+}*/
