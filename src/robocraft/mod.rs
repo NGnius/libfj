@@ -2,7 +2,7 @@ mod factory;
 mod factory_json;
 mod factory_request_builder;
 pub use self::factory::{FactoryAPI};
-pub use self::factory_json::{FactoryInfo, FactoryRobotListInfo, RoboShopItemsInfo};
+pub use self::factory_json::{FactoryInfo, FactoryRobotListInfo, RoboShopItemsInfo, FactoryRobotGetInfo};
 pub use self::factory_request_builder::{FactorySearchBuilder, FactoryMovementType, FactoryOrderType, FactoryWeaponType, FactoryTextSearchType};
 
 mod auth;

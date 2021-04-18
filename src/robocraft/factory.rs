@@ -1,7 +1,7 @@
 use reqwest::{Client, Error};
 use url::{Url};
 
-use crate::robocraft::{ITokenProvider, DefaultTokenProvider, FactoryInfo, FactorySearchBuilder};
+use crate::robocraft::{ITokenProvider, DefaultTokenProvider, FactoryInfo, FactorySearchBuilder, RoboShopItemsInfo, FactoryRobotGetInfo};
 use crate::robocraft::factory_json::ListPayload;
 
 const FACTORY_DOMAIN: &str = "https://factory.robocraftgame.com/";
@@ -26,7 +26,7 @@ impl FactoryAPI {
         }
     }
     
-    pub async fn list(&self) -> Result<FactoryInfo, Error> {
+    pub async fn list(&self) -> Result<FactoryInfo<RoboShopItemsInfo>, Error> {
         let url = Url::parse(FACTORY_DOMAIN)
             .unwrap()
             .join("/api/roboShopItems/list")
@@ -39,7 +39,7 @@ impl FactoryAPI {
         }
         let result = request_builder.send().await;
         if let Ok(response) = result {
-            return response.json::<FactoryInfo>().await;
+            return response.json::<FactoryInfo<RoboShopItemsInfo>>().await;
         }
         Err(result.err().unwrap())
     }
@@ -55,5 +55,21 @@ impl FactoryAPI {
         }
         let request_builder = self.client.post(url);
         FactorySearchBuilder::new(request_builder, token_opt)
+    }
+    
+    pub async fn get(&self, item_id: usize) -> Result<FactoryInfo<FactoryRobotGetInfo>, Error> {
+        let url = Url::parse(FACTORY_DOMAIN)
+            .unwrap()
+            .join(&format!("/api/roboShopItems/get/{}", item_id))
+            .unwrap();
+        let mut request_builder = self.client.get(url);
+        if let Ok(token) = self.token.token() {
+            request_builder = request_builder.header("Authorization", "Web ".to_owned() + &token);
+        }
+        let result = request_builder.send().await;
+        if let Ok(response) = result {
+            return response.json::<FactoryInfo<FactoryRobotGetInfo>>().await;
+        }
+        Err(result.err().unwrap())
     }
 }

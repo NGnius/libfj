@@ -1,6 +1,6 @@
 use reqwest::{RequestBuilder, Error};
 
-use crate::robocraft::{FactoryInfo};
+use crate::robocraft::{FactoryInfo, RoboShopItemsInfo};
 use crate::robocraft::factory_json::ListPayload;
 
 pub enum FactoryOrderType {
@@ -156,14 +156,14 @@ impl FactorySearchBuilder {
         self
     }
     
-    pub async fn send(mut self) -> Result<FactoryInfo, Error> {
+    pub async fn send(mut self) -> Result<FactoryInfo<RoboShopItemsInfo>, Error> {
         self.reqwest_builder = self.reqwest_builder.json(&self.payload);
         if let Some(token) = self.token.clone() {
             self.reqwest_builder = self.reqwest_builder.header("Authorization", "Web ".to_owned() + &token);
         }
         let result = self.reqwest_builder.send().await;
         if let Ok(response) = result {
-            return response.json::<FactoryInfo>().await;
+            return response.json::<FactoryInfo<RoboShopItemsInfo>>().await;
         }
         Err(result.err().unwrap())
     }

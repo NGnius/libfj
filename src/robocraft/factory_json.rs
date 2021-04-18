@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+// list endpoint
+
 #[derive(Deserialize, Serialize, Clone)]
 pub(crate) struct ListPayload {
     #[serde(rename = "page")]
@@ -81,9 +83,9 @@ impl ListPayload {
 }
 
 #[derive(Deserialize, Serialize, Clone)]
-pub struct FactoryInfo {
+pub struct FactoryInfo<T> {
     #[serde(rename = "response")]
-    pub response: RoboShopItemsInfo,
+    pub response: T,
     #[serde(rename = "statusCode")]
     pub status_code: usize,
 }
@@ -139,6 +141,62 @@ pub struct FactoryRobotListInfo {
 }
 
 impl std::string::ToString for FactoryRobotListInfo {
+    fn to_string(&self) -> String {
+        format!("{} by {} ({})", &self.item_name, &self.added_by_display_name, &self.item_id)
+    }
+}
+
+// get/<item_id> endpoint
+
+#[derive(Deserialize, Serialize, Clone)]
+pub struct FactoryRobotGetInfo {
+    #[serde(rename = "id")]
+    pub item_id: usize,
+    #[serde(rename = "name")]
+    pub item_name: String,
+    #[serde(rename = "description")]
+    pub item_description: String,
+    #[serde(rename = "thumbnail")]
+    pub thumbnail: String, // url
+    #[serde(rename = "addedBy")]
+    pub added_by: String,
+    #[serde(rename = "addedByDisplayName")]
+    pub added_by_display_name: String,
+    #[serde(rename = "addedDate")]
+    pub added_date: String, // ISO date
+    #[serde(rename = "expiryDate")]
+    pub expiry_date: String, // ISO date
+    #[serde(rename = "cpu")]
+    pub cpu: usize,
+    #[serde(rename = "totalRobotRanking")]
+    pub total_robot_ranking: usize,
+    #[serde(rename = "rentCount")]
+    pub rent_count: usize,
+    #[serde(rename = "buyCount")]
+    pub buy_count: usize,
+    #[serde(rename = "buyable")]
+    pub buyable: bool,
+    #[serde(rename = "removedDate")]
+    pub removed_date: Option<String>,
+    #[serde(rename = "banDate")]
+    pub ban_date: Option<String>,
+    #[serde(rename = "featured")]
+    pub featured: bool,
+    #[serde(rename = "bannerMessage")]
+    pub banner_message: Option<String>,
+    #[serde(rename = "combatRating")]
+    pub combat_rating: f32,
+    #[serde(rename = "cosmeticRating")]
+    pub cosmetic_rating: f32,
+    #[serde(rename = "cubeData")]
+    pub cube_data: String,
+    #[serde(rename = "colourData")]
+    pub colour_data: String,
+    #[serde(rename = "cubeAmounts")]
+    pub cube_amounts: String, // JSON as str
+}
+
+impl std::string::ToString for FactoryRobotGetInfo {
     fn to_string(&self) -> String {
         format!("{} by {} ({})", &self.item_name, &self.added_by_display_name, &self.item_id)
     }

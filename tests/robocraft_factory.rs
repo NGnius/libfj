@@ -28,7 +28,7 @@ fn builder() -> robocraft::FactorySearchBuilder {
     robocraft::FactoryAPI::new().list_builder()
 }
 
-fn assert_factory_list(robo_info: robocraft::FactoryInfo) -> Result<(), ()> {
+fn assert_factory_list(robo_info: robocraft::FactoryInfo<robocraft::RoboShopItemsInfo>) -> Result<(), ()> {
     assert_ne!(robo_info.response.roboshop_items.len(), 0);
     assert_eq!(robo_info.status_code, 200);
     for robot in &robo_info.response.roboshop_items {
@@ -75,4 +75,17 @@ async fn robocraft_factory_player_query() -> Result<(), ()> {
         .send().await;
     assert!(result.is_ok());
     assert_factory_list(result.unwrap())
+}
+
+#[tokio::test]
+async fn robocraft_factory_robot_query() -> Result<(), ()> {
+    let api = robocraft::FactoryAPI::new();
+    let result = api.get(6478345 /* featured robot id*/).await;
+    assert!(result.is_ok());
+    let bot_info = result.unwrap();
+    assert_ne!(bot_info.response.item_name, "");
+    assert_eq!(bot_info.response.item_id, 6478345);
+    assert_ne!(bot_info.response.cube_data, "");
+    assert_ne!(bot_info.response.colour_data, "");
+    Ok(())
 }
