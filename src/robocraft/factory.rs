@@ -4,7 +4,7 @@ use url::{Url};
 use crate::robocraft::{ITokenProvider, DefaultTokenProvider, FactoryInfo, FactorySearchBuilder, RoboShopItemsInfo, FactoryRobotGetInfo};
 use crate::robocraft::factory_json::ListPayload;
 
-const FACTORY_DOMAIN: &str = "https://factory.robocraftgame.com/";
+pub const FACTORY_DOMAIN: &str = "https://factory.robocraftgame.com/";
 
 pub struct FactoryAPI {
     client: Client,
