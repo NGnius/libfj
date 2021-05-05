@@ -1,4 +1,5 @@
 use libfj::robocraft;
+use std::convert::From;
 
 #[test]
 fn robocraft_factory_api_init() -> Result<(), ()> {
@@ -80,12 +81,31 @@ async fn robocraft_factory_player_query() -> Result<(), ()> {
 #[tokio::test]
 async fn robocraft_factory_robot_query() -> Result<(), ()> {
     let api = robocraft::FactoryAPI::new();
-    let result = api.get(6478345 /* featured robot id*/).await;
+    let result = api.get(6478345 /* featured robot id */).await;
     assert!(result.is_ok());
     let bot_info = result.unwrap();
     assert_ne!(bot_info.response.item_name, "");
     assert_eq!(bot_info.response.item_id, 6478345);
     assert_ne!(bot_info.response.cube_data, "");
     assert_ne!(bot_info.response.colour_data, "");
+    Ok(())
+}
+
+#[tokio::test]
+async fn robocraft_factory_robot_cubes() -> Result<(), ()> {
+    let api = robocraft::FactoryAPI::new();
+    let result = api.get(6478345 /* featured robot id */).await;
+    assert!(result.is_ok());
+    let bot_info = result.unwrap();
+    let cubes = robocraft::Cubes::from(bot_info.clone());
+    println!("cube count: {} or {}", cubes.provided_len, cubes.len());
+    /*for c in cubes.into_iter() {
+        println!("Cube.to_string() -> `{}`", c.to_string());
+    }*/
+    let (cube_d, colour_d) = cubes.dump();
+    let cube_str = base64::encode(&cube_d);
+    let colour_str = base64::encode(&colour_d);
+    assert_eq!(cube_str, bot_info.response.cube_data);
+    assert_eq!(colour_str, bot_info.response.colour_data);
     Ok(())
 }

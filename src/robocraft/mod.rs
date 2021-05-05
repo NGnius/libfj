@@ -7,6 +7,9 @@ pub use self::factory_request_builder::{FactorySearchBuilder, FactoryMovementTyp
 #[cfg(feature = "simple")]
 pub(crate) use self::factory_json::{ListPayload};
 
+mod cubes;
+pub use self::cubes::{Cube, Cubes};
+
 mod auth;
 pub use self::auth::{ITokenProvider, DefaultTokenProvider};
 
