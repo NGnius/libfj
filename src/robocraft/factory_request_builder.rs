@@ -1,8 +1,11 @@
 use reqwest::{RequestBuilder, Error};
+use num_enum::{TryFromPrimitive};
 
 use crate::robocraft::{FactoryInfo, RoboShopItemsInfo};
 use crate::robocraft::factory_json::ListPayload;
 
+#[derive(Eq, PartialEq, TryFromPrimitive)]
+#[repr(u8)]
 pub enum FactoryOrderType {
     Suggested = 0,
     CombatRating = 1,
@@ -12,6 +15,8 @@ pub enum FactoryOrderType {
     MostBought = 5,
 }
 
+#[derive(Eq, PartialEq, TryFromPrimitive)]
+#[repr(u32)]
 pub enum FactoryMovementType {
     Wheels = 100000,
     Hovers = 200000,
@@ -27,6 +32,8 @@ pub enum FactoryMovementType {
     Propellers=1200000
 }
 
+#[derive(Eq, PartialEq, TryFromPrimitive)]
+#[repr(u32)]
 pub enum FactoryWeaponType {
     Laser=10000000,
     PlasmaLauncher=20000000,
@@ -40,6 +47,8 @@ pub enum FactoryWeaponType {
     ChainShredder=75000000,
 }
 
+#[derive(Eq, PartialEq, TryFromPrimitive)]
+#[repr(u8)]
 pub enum FactoryTextSearchType {
     All=0,
     Player=1,
@@ -94,6 +103,12 @@ impl FactorySearchBuilder {
         self
     }
     
+    pub fn movement_raw(mut self, filter: String) -> Self {
+        self.payload.movement_filter = filter.clone();
+        self.payload.movement_category_filter = filter.clone();
+        self
+    }
+    
     pub fn weapon_or(mut self, weapon_type: FactoryWeaponType) -> Self {
         if self.payload.weapon_filter == "" {
             self.payload.weapon_filter = format!("{},{}", &self.payload.weapon_filter, weapon_type as isize);
@@ -101,6 +116,12 @@ impl FactorySearchBuilder {
             self.payload.weapon_filter = (weapon_type as isize).to_string();
         }
         self.payload.weapon_category_filter = self.payload.weapon_filter.clone();
+        self
+    }
+    
+    pub fn weapon_raw(mut self, filter: String) -> Self {
+        self.payload.weapon_filter = filter.clone();
+        self.payload.weapon_category_filter = filter.clone();
         self
     }
     

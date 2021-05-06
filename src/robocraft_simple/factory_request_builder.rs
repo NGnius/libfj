@@ -3,6 +3,7 @@ use ureq::{Request, Response, Error};
 use crate::robocraft::{FactoryInfo, RoboShopItemsInfo, FactoryTextSearchType, FactoryWeaponType, FactoryMovementType, FactoryOrderType};
 use crate::robocraft::{ListPayload};
 
+#[derive(Clone)]
 pub struct FactorySearchBuilder {
     reqwest_builder: Request,
     payload: ListPayload,
@@ -41,6 +42,12 @@ impl FactorySearchBuilder {
     }
     */
     
+    pub fn movement_raw(mut self, filter: String) -> Self {
+        self.payload.movement_filter = filter.clone();
+        self.payload.movement_category_filter = filter.clone();
+        self
+    }
+    
     pub fn movement_or(mut self, movement_type: FactoryMovementType) -> Self {
         if self.payload.movement_filter == "" {
             self.payload.movement_filter = format!("{},{}", &self.payload.movement_filter, movement_type as isize);
@@ -48,6 +55,12 @@ impl FactorySearchBuilder {
             self.payload.movement_filter = (movement_type as isize).to_string();
         }
         self.payload.movement_category_filter = self.payload.movement_filter.clone();
+        self
+    }
+    
+    pub fn weapon_raw(mut self, filter: String) -> Self {
+        self.payload.weapon_filter = filter.clone();
+        self.payload.weapon_category_filter = filter.clone();
         self
     }
     
