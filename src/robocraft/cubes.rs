@@ -3,13 +3,22 @@ use std::io::Read;
 
 // TODO(maybe) parse iteratively instead of one-shot
 
+/// A collection of cube data
+///
+/// This holds all data parsed from cube_data and colour_data. 
+/// Individual Cube structs can be iterated through.
 #[derive(Clone)]
 pub struct Cubes {
+    /// Parsed cube count (the first 32 bits of data parsed to `u32`)
     pub provided_len: u32,
     cubes: Vec<Cube>,
 }
 
 impl Cubes {
+    /// Process the raw bytes containing block data from a Robocraft CRF bot
+    ///
+    /// `cube_data` and `colour_data` correspond to the `cube_data` and `colour_data` fields of FactoryRobotGetInfo.
+    /// In generally, you should use `Cubes::from<FactoryRobotGetInfo>(data)` instead of this lower-level function.
     pub fn parse(cube_data: &mut Vec<u8>, colour_data: &mut Vec<u8>) -> Result<Self, ()> {
         // read first 4 bytes (cube count) from both arrays and make sure they match
         let mut cube_buf = [0; 4];
@@ -66,6 +75,13 @@ impl Cubes {
         })
     }
     
+    /// Dump the raw bytes containing block data for a Robocraft bot.
+    ///
+    /// The first tuple item is cube data, and the second item is colour data.
+    /// Use this to write a modified robot to file.
+    /// This is the inverse of `Cubes::parse(...)`.
+    ///
+    /// I'm not sure what this would actually be useful for...
     pub fn dump(&self) -> (Vec<u8>, Vec<u8>) {
         let mut cube_buf = Vec::new();
         let mut colour_buf = Vec::new();
@@ -78,6 +94,10 @@ impl Cubes {
         (cube_buf, colour_buf)
     }
     
+    /// Get the actual amount of cubes.
+    ///
+    /// This differs from `provided_len` by being the amount of cubes parsed (successfully), instead of something parsed from block data.
+    /// For any valid robot data, `data.provided_len == data.len()`.
     pub fn len(&self) -> usize {
         self.cubes.len()
     }
@@ -93,13 +113,22 @@ impl<'a> std::iter::IntoIterator for &'a Cubes {
     }
 }
 
+/// A single block in a Robocraft robot.
+///
+/// From the front of a Robocraft garage bay, looking at the back, all positions are measured from the back bottom right corner.
 #[derive(Copy, Clone)]
 pub struct Cube {
+    /// The cube id
     pub id: u32,
+    /// The cube's x position (left to right)
     pub x: u8, // left to right
+    /// The cube's y position (bottom to top)
     pub y: u8, // bottom to top
+    /// The cube's z position (back to front)
     pub z: u8, // back to front
+    /// The cube's orientation
     pub orientation: u8,
+    /// The cube's colour, one of the 24 possible colours in Robocraft
     pub colour: u8,
 }
 
@@ -143,11 +172,17 @@ impl Cube {
         Ok(4)
     }
     
+    /// Dump the raw cube data as used in the Robocraft CRF.
+    ///
+    /// This is useless by itself, use `Cubes.dump()` for a valid robot.
     pub fn dump_cube_data(&self) -> [u8; 8] {
         let id_buf = self.id.to_le_bytes();
         [id_buf[0], id_buf[1], id_buf[2], id_buf[3], self.x, self.y, self.z, self.orientation]
     }
     
+    /// Dump the raw colour data as used in the Robocraft CRF.
+    ///
+    /// This is useless by itself, use `Cubes.dump()` for a valid robot.
     pub fn dump_colour_data(&self) -> [u8; 4] {
         [self.colour, self.x, self.y, self.z]
     }

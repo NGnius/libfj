@@ -6,12 +6,17 @@ use crate::robocraft::{ITokenProvider, DefaultTokenProvider, FACTORY_DOMAIN, Fac
 use crate::robocraft::{ListPayload};
 use crate::robocraft_simple::FactorySearchBuilder;
 
+/// Simpler CRF API implementation.
+/// Refer to libfj::robocraft::FactoryAPI for in-depth documentation.
+/// The only API difference is that this API is blocking (i.e. no async).
+/// This version also works with Wine and Proton since it does not rely on tokio.
 pub struct FactoryAPI {
     client: Agent,
     token: Box<dyn ITokenProvider>,
 }
 
 impl FactoryAPI {
+    /// Create a new instance using `DefaultTokenProvider`.
     pub fn new() -> FactoryAPI {
         FactoryAPI {
             client: Agent::new(),
@@ -19,6 +24,7 @@ impl FactoryAPI {
         }
     }
     
+    /// List CRF robots
     pub fn list(&self) -> Result<FactoryInfo<RoboShopItemsInfo>, Error> {
         let url = Url::parse(FACTORY_DOMAIN)
             .unwrap()
@@ -41,6 +47,7 @@ impl FactoryAPI {
         Err(result.err().unwrap())
     }
     
+    /// Build a list query
     pub fn list_builder(&self) -> FactorySearchBuilder {
         let url = Url::parse(FACTORY_DOMAIN)
             .unwrap()
@@ -54,6 +61,7 @@ impl FactoryAPI {
         FactorySearchBuilder::new(request_builder, token_opt)
     }
     
+    /// Get complete information on a robot.
     pub fn get(&self, item_id: usize) -> Result<FactoryInfo<FactoryRobotGetInfo>, Error> {
         let url = Url::parse(FACTORY_DOMAIN)
             .unwrap()

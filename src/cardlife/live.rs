@@ -6,12 +6,14 @@ use crate::cardlife::{AuthenticationInfo, AuthenticationPayload, LobbyInfo, Lobb
 const AUTHENTICATION_DOMAIN: &str = "https://live-auth.cardlifegame.com/";
 const LOBBY_DOMAIN: &str = "https://live-lobby.cardlifegame.com/";
 
+/// Cardlife live information API
 pub struct LiveAPI {
     client: Client,
     auth: Option<AuthenticationInfo>,
 }
 
 impl LiveAPI {
+    /// Create a new instance
     pub fn new() -> LiveAPI {
         LiveAPI {
             client: Client::new(),
@@ -19,6 +21,7 @@ impl LiveAPI {
         }
     }
 
+    /// Create a new instance and login using email
     pub async fn login_email(email: &str, password: &str) -> Result<LiveAPI, Error> {
         let mut instance = LiveAPI::new();
         let result = instance.authenticate_email(email, password).await;
@@ -29,7 +32,8 @@ impl LiveAPI {
             return Err(result.err().unwrap());
         }
     }
-
+    
+    /// Login using email and password
     pub async fn authenticate_email(&mut self, email: &str, password: &str) -> Result<AuthenticationInfo, Error> {
         let url = Url::parse(AUTHENTICATION_DOMAIN)
             .unwrap()
@@ -51,7 +55,10 @@ impl LiveAPI {
         }
         Err(result.err().unwrap())
     }
+    
+    // TODO username authentication
 
+    /// Retrieve lobby information for all active Cardlife servers
     pub async fn lobbies(&self) -> Result<LobbyInfo, Error> {
         let url = Url::parse(LOBBY_DOMAIN)
             .unwrap()

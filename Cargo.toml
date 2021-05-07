@@ -1,6 +1,6 @@
 [package]
 name = "libfj"
-version = "0.1.0"
+version = "0.4.1"
 authors = ["NGnius (Graham) <ngniusness@gmail.com>"]
 edition = "2018"
 description = "An unofficial collection of APIs used in FreeJam games and mods"
