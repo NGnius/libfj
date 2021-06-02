@@ -18,7 +18,7 @@ impl Cubes {
     /// Process the raw bytes containing block data from a Robocraft CRF bot
     ///
     /// `cube_data` and `colour_data` correspond to the `cube_data` and `colour_data` fields of FactoryRobotGetInfo.
-    /// In generally, you should use `Cubes::from<FactoryRobotGetInfo>(data)` instead of this lower-level function.
+    /// In general, you should use `Cubes::from<FactoryRobotGetInfo>(data)` instead of this lower-level function.
     pub fn parse(cube_data: &mut Vec<u8>, colour_data: &mut Vec<u8>) -> Result<Self, ()> {
         // read first 4 bytes (cube count) from both arrays and make sure they match
         let mut cube_buf = [0; 4];
@@ -133,7 +133,7 @@ pub struct Cube {
 }
 
 impl Cube {
-    fn parse_cube_data(&mut self, reader: &mut &[u8]) -> Result<usize, ()> {
+    fn parse_cube_data(&mut self, reader: &mut dyn Read) -> Result<usize, ()> {
         let mut buf = [0; 4];
         // read cube id
         if let Ok(len) = reader.read(&mut buf) {
@@ -159,7 +159,7 @@ impl Cube {
         Ok(8)
     }
     
-    fn parse_colour_data(&mut self, reader: &mut &[u8]) -> Result<usize, ()> {
+    fn parse_colour_data(&mut self, reader: &mut dyn Read) -> Result<usize, ()> {
         let mut buf = [0; 4];
         if let Ok(len) = reader.read(&mut buf) {
             if len != 4 {

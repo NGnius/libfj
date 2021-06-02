@@ -1,11 +1,13 @@
 //! An unofficial collection of APIs used in Robocraft and Cardlife.
 //!
 //! This crate is WIP, but the available APIs are tested and very usable.
-#![warn(missing_docs)]
-
+#[cfg(feature = "cardlife")]
 pub mod cardlife;
-pub mod robocraft;
-#[cfg(feature = "simple")]
-pub mod robocraft_simple;
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "cardlife"))]
 pub mod cardlife_simple;
+#[cfg(feature = "robocraft")]
+pub mod robocraft;
+#[cfg(all(feature = "simple", feature = "robocraft"))]
+pub mod robocraft_simple;
+#[cfg(feature = "techblox")]
+pub mod techblox;

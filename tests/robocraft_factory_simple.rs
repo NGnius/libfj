@@ -1,21 +1,21 @@
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 use libfj::robocraft_simple;
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 use libfj::robocraft;
 
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 #[test]
 fn robocraft_factory_api_init_simple() -> Result<(), ()> {
     robocraft_simple::FactoryAPI::new();
     Ok(())
 }
 
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 fn builder() -> robocraft_simple::FactorySearchBuilder {
     robocraft_simple::FactoryAPI::new().list_builder()
 }
 
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 fn assert_factory_list(robo_info: robocraft::FactoryInfo<robocraft::RoboShopItemsInfo>) -> Result<(), ()> {
     assert_ne!(robo_info.response.roboshop_items.len(), 0);
     assert_eq!(robo_info.status_code, 200);
@@ -30,7 +30,7 @@ fn assert_factory_list(robo_info: robocraft::FactoryInfo<robocraft::RoboShopItem
 }
 
 #[test]
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 fn robocraft_factory_custom_query_simple() -> Result<(), ()> {
     let result = builder()
         .movement_or(robocraft::FactoryMovementType::Wheels)
@@ -55,7 +55,7 @@ fn robocraft_factory_custom_query_simple() -> Result<(), ()> {
 }
 
 #[test]
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 fn robocraft_factory_player_query() -> Result<(), ()> {
     let result = builder()
         .text("Baerentoeter".to_string())
@@ -67,7 +67,7 @@ fn robocraft_factory_player_query() -> Result<(), ()> {
 }
 
 #[test]
-#[cfg(feature = "simple")]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 fn robocraft_factory_robot_query() -> Result<(), ()> {
     let api = robocraft_simple::FactoryAPI::new();
     let result = api.get(6478345 /* featured robot id*/);

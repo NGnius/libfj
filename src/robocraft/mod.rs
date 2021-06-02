@@ -1,4 +1,4 @@
-//! Robocraft APIs for the CRF and leaderboards (WIP)
+//! Robocraft APIs for the CRF and leaderboards (WIP).
 //! FactoryAPI is mostly complete, but many other APIs are missing.
 
 mod factory;

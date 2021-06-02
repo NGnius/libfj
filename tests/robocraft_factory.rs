@@ -1,12 +1,16 @@
+#[cfg(feature = "robocraft")]
 use libfj::robocraft;
+#[cfg(feature = "robocraft")]
 use std::convert::From;
 
+#[cfg(feature = "robocraft")]
 #[test]
 fn robocraft_factory_api_init() -> Result<(), ()> {
     robocraft::FactoryAPI::new();
     Ok(())
 }
 
+#[cfg(feature = "robocraft")]
 #[tokio::test]
 async fn robocraft_factory_default_query() -> Result<(), ()> {
     let api = robocraft::FactoryAPI::new();
@@ -25,10 +29,12 @@ async fn robocraft_factory_default_query() -> Result<(), ()> {
     Ok(())
 }
 
+#[cfg(feature = "robocraft")]
 fn builder() -> robocraft::FactorySearchBuilder {
     robocraft::FactoryAPI::new().list_builder()
 }
 
+#[cfg(feature = "robocraft")]
 fn assert_factory_list(robo_info: robocraft::FactoryInfo<robocraft::RoboShopItemsInfo>) -> Result<(), ()> {
     assert_ne!(robo_info.response.roboshop_items.len(), 0);
     assert_eq!(robo_info.status_code, 200);
@@ -42,6 +48,7 @@ fn assert_factory_list(robo_info: robocraft::FactoryInfo<robocraft::RoboShopItem
     Ok(())
 }
 
+#[cfg(feature = "robocraft")]
 #[tokio::test]
 async fn robocraft_factory_custom_query() -> Result<(), ()> {
     let api = robocraft::FactoryAPI::new();
@@ -67,6 +74,7 @@ async fn robocraft_factory_custom_query() -> Result<(), ()> {
     Ok(())
 }
 
+#[cfg(feature = "robocraft")]
 #[tokio::test]
 async fn robocraft_factory_player_query() -> Result<(), ()> {
     let result = builder()
@@ -78,6 +86,7 @@ async fn robocraft_factory_player_query() -> Result<(), ()> {
     assert_factory_list(result.unwrap())
 }
 
+#[cfg(feature = "robocraft")]
 #[tokio::test]
 async fn robocraft_factory_robot_query() -> Result<(), ()> {
     let api = robocraft::FactoryAPI::new();
@@ -91,6 +100,7 @@ async fn robocraft_factory_robot_query() -> Result<(), ()> {
     Ok(())
 }
 
+#[cfg(feature = "robocraft")]
 #[tokio::test]
 async fn robocraft_factory_robot_cubes() -> Result<(), ()> {
     let api = robocraft::FactoryAPI::new();

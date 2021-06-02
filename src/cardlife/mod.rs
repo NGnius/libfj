@@ -1,4 +1,4 @@
-//! Cardlife vanilla and modded (CLre) APIs (WIP)
+//! Cardlife vanilla and modded (CLre) APIs (WIP).
 //! LiveAPI and CLreServer are mostly complete, but some other APIs are missing.
 
 mod client;

@@ -1,14 +1,19 @@
+#[cfg(feature = "cardlife")]
 use libfj::cardlife;
 
+#[cfg(feature = "cardlife")]
 const EMAIL: &str = "";
+#[cfg(feature = "cardlife")]
 const PASSWORD: &str = "";
 
+#[cfg(feature = "cardlife")]
 #[test]
 fn live_api_init() -> Result<(), ()> {
     cardlife::LiveAPI::new();
     Ok(())
 }
 
+#[cfg(feature = "cardlife")]
 #[tokio::test]
 async fn live_api_init_auth() -> Result<(), ()> {
     let live = cardlife::LiveAPI::login_email(EMAIL, PASSWORD).await;
@@ -16,6 +21,7 @@ async fn live_api_init_auth() -> Result<(), ()> {
     Ok(())
 }
 
+#[cfg(feature = "cardlife")]
 #[tokio::test]
 async fn live_api_authenticate() -> Result<(), ()> {
     let mut live = cardlife::LiveAPI::new();
@@ -30,6 +36,7 @@ async fn live_api_authenticate() -> Result<(), ()> {
     Ok(())
 }
 
+#[cfg(feature = "cardlife")]
 #[tokio::test]
 async fn live_api_lobbies() -> Result<(), ()> {
     //let live = cardlife::LiveAPI::login_email(EMAIL, PASSWORD).await.unwrap();
