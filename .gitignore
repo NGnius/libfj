@@ -2,3 +2,4 @@
 Cargo.lock
 /.idea
 /parsable_macro_derive/target
+/tests/test-*.obj
