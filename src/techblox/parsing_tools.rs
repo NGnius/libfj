@@ -1,5 +1,6 @@
 use std::io::{Read, Write};
 use crate::techblox::Parsable;
+use half::f16;
 
 // reading
 
@@ -141,6 +142,19 @@ impl Parsable for i64 {
 impl Parsable for f32 {
     fn parse(reader: &mut dyn Read) -> std::io::Result<Self> {
         let mut buf = [0; 4];
+        reader.read(&mut buf)?;
+        Ok(Self::from_le_bytes(buf))
+    }
+
+    fn dump(&self, writer: &mut dyn Write) -> std::io::Result<usize> {
+        writer.write(&self.to_le_bytes())
+    }
+}
+
+
+impl Parsable for f16 {
+    fn parse(reader: &mut dyn Read) -> std::io::Result<Self> {
+        let mut buf = [0; 2];
         reader.read(&mut buf)?;
         Ok(Self::from_le_bytes(buf))
     }

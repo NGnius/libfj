@@ -1,5 +1,6 @@
 use crate::techblox::{Parsable};
 use libfj_parsable_macro_derive::*;
+use half::f16;
 
 /// Unity-like floating-point vector for 3-dimensional space.
 #[derive(Clone, Copy, Parsable)]
@@ -10,6 +11,17 @@ pub struct UnityFloat3 {
     pub y: f32,
     /// z coordinate
     pub z: f32,
+}
+
+/// Unity-like half-precision vector for 3-dimensional space.
+#[derive(Clone, Copy, Parsable)]
+pub struct UnityHalf3 {
+    /// x coordinate
+    pub x: f16,
+    /// y coordinate
+    pub y: f16,
+    /// z coordinate
+    pub z: f16,
 }
 
 /// Unity-like floating-point vector for 4-dimensional space.
