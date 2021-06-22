@@ -55,4 +55,8 @@ impl SerializedEntityDescriptor for BlockEntity {
         &self.colour_component,
         &self.group_component]
     }
+
+    fn hash_name(&self) -> u32 {
+        Self::hash("StandardBlockEntityDescriptorV4") // 1357220432
+    }
 }

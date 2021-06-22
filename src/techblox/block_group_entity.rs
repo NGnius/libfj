@@ -21,6 +21,10 @@ impl SerializedEntityDescriptor for BlockGroupEntity {
         vec![&self.saved_block_group_id,
         &self.block_group_transform]
     }
+
+    fn hash_name(&self) -> u32 {
+        Self::hash("BlockGroupEntityDescriptorV0")
+    }
 }
 
 /// Saved block group identifier entity component.

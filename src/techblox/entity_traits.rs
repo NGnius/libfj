@@ -14,6 +14,12 @@ pub trait SerializedEntityDescriptor: Parsable {
     fn serialized_components() -> u8 where Self: Sized;
     /// Components that this entity is comprised of
     fn components<'a>(&'a self) -> Vec<&'a dyn SerializedEntityComponent>;
+    /// Hash of descriptor name
+    fn hash_name(&self) -> u32;
+    /// Hash of descriptor name
+    fn hash(s: &str) -> u32 where Self: Sized {
+        crate::techblox::hashname(s)
+    }
 }
 
 /// Serializable entity component.

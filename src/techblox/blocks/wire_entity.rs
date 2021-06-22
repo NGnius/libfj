@@ -17,6 +17,10 @@ impl SerializedEntityDescriptor for SerializedWireEntity {
     fn components<'a>(&'a self) -> Vec<&'a dyn SerializedEntityComponent> {
         vec![&self.save_data_component]
     }
+
+    fn hash_name(&self) -> u32 {
+        Self::hash("WireEntityDescriptorMock") // 1818308818
+    }
 }
 
 /// Wire connection information that is saved.
@@ -48,6 +52,10 @@ impl SerializedEntityDescriptor for SerializedGlobalWireSettingsEntity {
 
     fn components<'a>(&'a self) -> Vec<&'a dyn SerializedEntityComponent> {
         vec![&self.settings_component]
+    }
+
+    fn hash_name(&self) -> u32 {
+        Self::hash("GlobalWireSettingsEntityDescriptor") // 1820064641
     }
 }
 

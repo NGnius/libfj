@@ -14,7 +14,65 @@ const GAMESAVE_PATH2: &str = "tests/GameSave2.Techblox";
 
 #[cfg(feature = "techblox")]
 const HASHNAMES: &[&str] = &[
+    "BlockGroupEntityDescriptorV0",
+
     "StandardBlockEntityDescriptorV4",
+    "BatteryEntityDescriptorV4",
+    "MotorEntityDescriptorV7",
+    "LeverEntityDescriptorV7",
+    "ButtonEntityDescriptorV6",
+    "JointBlockEntityDescriptorV3",
+    "ServoEntityDescriptorV7",
+    "PistonEntityDescriptorV6",
+    "DampedSpringEntityDescriptorV5",
+    "DampedAngularSpringEntityDescriptorV4",
+    "SpawnPointEntityDescriptorV6",
+    "BuildingSpawnPointEntityDescriptorV4",
+    "TriggerEntityDescriptorV6",
+    "PilotSeatEntityDescriptorV4",
+    "PilotSeatEntityDescriptorV3",
+    "TextBlockEntityDescriptorV4",
+    "PassengerSeatEntityDescriptorV4",
+    "PassengerSeatEntityDescriptorV3",
+    "LogicBlockEntityDescriptorV1",
+    "TyreEntityDescriptorV1",
+    "ObjectIDEntityDescriptorV1",
+    "MoverEntityDescriptorV1",
+    "RotatorEntityDescriptorV1",
+    "DamperEntityDescriptorV1",
+    "AdvancedDamperEntityDescriptorV1",
+    "CoMEntityDescriptor",
+    "FilterBlockEntityDescriptorV1",
+    "ConstrainerEntityDescriptorV1",
+    "NumberToTextBlockEntityDescriptorV1",
+    "CentreHudBlockEntityDescriptorV1",
+    "ObjectiveHudBlockEntityDescriptorV1",
+    "GameStatsHudBlockEntityDescriptorV1",
+    "GameOverHudBlockEntityDescriptorV1",
+    "TimerBlockEntityDescriptorV1",
+    "BitBlockEntityDescriptorV2",
+    "ConstantBlockEntityDescriptor",
+    "CounterBlockEntityDescriptorV1",
+    "SimpleSfxEntityDescriptorV1",
+    "LoopedSfxEntityDescriptorV1",
+    "MusicBlockEntityDescriptorV1",
+    "ProjectileBlockEntityDescriptorV1",
+    "DamagingSurfaceEntityDescriptorV1",
+    "DestructionManagerEntityDescriptorV1",
+    "ChunkDestructionBlockEntityDescriptorV1",
+    "ClusterDestructionBlockEntityDescriptorV1",
+    "PickupBlockEntityDescriptorV1",
+    "PointLightEntityDescriptorV1",
+    "SpotLightEntityDescriptorV1",
+    "SunLightEntityDescriptorV1",
+    "AmbientLightEntityDescriptorV1",
+    "FogEntityDescriptorV1",
+    "SkyEntityDescriptorV1",
+    "SynchronizedWireBlockEntityDescriptor",
+    "WheelRigEntityDescriptor",
+    "WheelRigSteerableEntityDescriptor",
+    "EngineBlockEntityDescriptor",
+
     "WireEntityDescriptorMock",
     "GlobalWireSettingsEntityDescriptor",
     "FlyCamEntityDescriptorV0",
@@ -35,6 +93,7 @@ fn techblox_gamesave_parse() -> Result<(), ()> {
     }
     for i in 0..(gs.group_len as usize) {
         assert_eq!(gs.group_headers[i].component_count, techblox::BlockGroupEntity::serialized_components());
+        assert_eq!(gs.group_headers[i].hash, gs.cube_groups[i].hash_name());
     }
     for i in 1..(gs.cube_len as usize) {
         //assert_eq!(gs.cube_headers[i-1].hash, gs.cube_headers[i].hash);
@@ -46,16 +105,21 @@ fn techblox_gamesave_parse() -> Result<(), ()> {
     for i in 0..(gs.cube_len as usize) {
         assert!(gs.cube_headers[i].component_count >= blocks::BlockEntity::serialized_components());
         //println!("#{} components: {}", i, gs.cube_headers[i].component_count);
+        assert_eq!(gs.cube_headers[i].hash, gs.cube_entities[i].hash_name());
     }
 
     //println!("Parsed wire settings hash: {} obsolete? {}", gs.wire_settings_header.hash, gs.wire_settings_entity.settings_component.obsolete != 0);
     assert_eq!(gs.wire_settings_header.hash, EntityHeader::from_name("GlobalWireSettingsEntityDescriptor", 0, 0, 0).hash);
+    assert_eq!(gs.wire_settings_header.hash, gs.wire_settings_entity.hash_name());
 
     //println!("Parsed Flycam hash: {}", gs.flycam_header.hash);
     assert_eq!(gs.flycam_header.hash, EntityHeader::from_name("FlyCamEntityDescriptorV0", 0, 0, 0).hash);
+    assert_eq!(gs.flycam_header.hash, gs.flycam_entity.hash_name());
 
     //println!("Parsed Phycam hash: {}", gs.phycam_header.hash);
     assert_eq!(gs.phycam_header.hash, EntityHeader::from_name("CharacterCameraEntityDescriptorV1", 0, 0, 0).hash);
+    assert_eq!(gs.phycam_header.hash, gs.phycam_entity.hash_name());
+
     println!("{}", gs.to_string());
     Ok(())
 }
