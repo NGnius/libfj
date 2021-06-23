@@ -21,6 +21,12 @@ impl SerializedEntityDescriptor for PilotSeatEntity {
         return c;
     }
 
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        let mut c = self.block.components_mut();
+        c.push(&mut self.cam_component);
+        return c;
+    }
+
     fn hash_name(&self) -> u32 {
         Self::hash("PilotSeatEntityDescriptorV4") // 2281299333
     }

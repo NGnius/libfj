@@ -25,6 +25,13 @@ impl SerializedEntityDescriptor for DampedAngularSpringEntity {
         return c;
     }
 
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        let mut c = self.block.components_mut();
+        c.push(&mut self.tweak_component);
+        c.push(&mut self.spring_component);
+        return c;
+    }
+
     fn hash_name(&self) -> u32 {
         Self::hash("DampedAngularSpringEntityDescriptorV4") // 3789998433
     }
@@ -50,6 +57,13 @@ impl SerializedEntityDescriptor for DampedSpringEntity {
         let mut c = self.block.components();
         c.push(&self.tweak_component);
         c.push(&self.spring_component);
+        return c;
+    }
+
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        let mut c = self.block.components_mut();
+        c.push(&mut self.tweak_component);
+        c.push(&mut self.spring_component);
         return c;
     }
 

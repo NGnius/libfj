@@ -18,6 +18,10 @@ impl SerializedEntityDescriptor for SerializedFlyCamEntity {
         vec![&self.rb_component]
     }
 
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        vec![&mut self.rb_component]
+    }
+
     fn hash_name(&self) -> u32 {
         Self::hash("FlyCamEntityDescriptorV0") // 252528354
     }
@@ -46,6 +50,10 @@ impl SerializedEntityDescriptor for SerializedPhysicsCameraEntity {
 
     fn components<'a>(&'a self) -> Vec<&'a dyn SerializedEntityComponent> {
         vec![&self.cam_component]
+    }
+
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        vec![&mut self.cam_component]
     }
 
     fn hash_name(&self) -> u32 {

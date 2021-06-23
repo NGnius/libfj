@@ -14,6 +14,8 @@ pub trait SerializedEntityDescriptor: Parsable {
     fn serialized_components() -> u8 where Self: Sized;
     /// Components that this entity is comprised of
     fn components<'a>(&'a self) -> Vec<&'a dyn SerializedEntityComponent>;
+    /// Components that this entity is comprised of, for modification
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent>;
     /// Hash of descriptor name
     fn hash_name(&self) -> u32;
     /// Hash of descriptor name

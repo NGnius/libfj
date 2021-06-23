@@ -18,6 +18,10 @@ impl SerializedEntityDescriptor for TyreEntity {
         self.block.components()
     }
 
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        self.block.components_mut()
+    }
+
     fn hash_name(&self) -> u32 {
         Self::hash("TyreEntityDescriptorV1") // 1517625162
     }

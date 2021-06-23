@@ -22,6 +22,12 @@ impl SerializedEntityDescriptor for EngineBlockEntity {
         return c;
     }
 
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        let mut c = self.block.components_mut();
+        c.push(&mut self.tweak_component);
+        return c;
+    }
+
     fn hash_name(&self) -> u32 {
         Self::hash("EngineBlockEntityDescriptor") // 1757314505
     }

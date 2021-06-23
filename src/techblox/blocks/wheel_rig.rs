@@ -25,6 +25,13 @@ impl SerializedEntityDescriptor for WheelRigEntity {
         return c;
     }
 
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        let mut c = self.block.components_mut();
+        c.push(&mut self.tweak_component);
+        c.push(&mut self.joint_component);
+        return c;
+    }
+
     fn hash_name(&self) -> u32 {
         Self::hash("WheelRigEntityDescriptor") // 1156723746
     }
@@ -47,6 +54,12 @@ impl SerializedEntityDescriptor for WheelRigSteerableEntity {
     fn components<'a>(&'a self) -> Vec<&'a dyn SerializedEntityComponent> {
         let mut c = self.block.components();
         c.push(&self.tweak_component);
+        return c;
+    }
+
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        let mut c = self.block.components_mut();
+        c.push(&mut self.tweak_component);
         return c;
     }
 

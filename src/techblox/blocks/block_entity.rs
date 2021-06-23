@@ -56,6 +56,21 @@ impl SerializedEntityDescriptor for BlockEntity {
         &self.group_component]
     }
 
+    fn components_mut<'a>(&'a mut self) -> Vec<&'a mut dyn SerializedEntityComponent> {
+        vec![&mut self.db_component,
+        &mut self.pos_component,
+        &mut self.scale_component,
+        &mut self.rot_component,
+        &mut self.skew_component,
+        &mut self.grid_component,
+        &mut self.grid_conn_component,
+        &mut self.placement_component,
+        &mut self.material_component,
+        &mut self.uscale_component,
+        &mut self.colour_component,
+        &mut self.group_component]
+    }
+
     fn hash_name(&self) -> u32 {
         Self::hash("StandardBlockEntityDescriptorV4") // 1357220432
     }
