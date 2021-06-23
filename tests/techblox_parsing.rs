@@ -10,7 +10,11 @@ use std::fs::{File, OpenOptions};
 #[cfg(feature = "techblox")]
 const GAMESAVE_PATH: &str = "tests/GameSave.Techblox";
 #[cfg(feature = "techblox")]
-const GAMESAVE_PATH2: &str = "tests/GameSave2.Techblox";
+const GAMESAVE_PATH_OUT: &str = "tests/GameSave.out.Techblox";
+#[cfg(feature = "techblox")]
+const GAMESAVE_PATH_ALL: &str = "tests/All.Techblox";
+#[cfg(feature = "techblox")]
+const GAMESAVE_PATH_ALL_OUT: &str = "tests/All.out.Techblox";
 
 #[cfg(feature = "techblox")]
 const HASHNAMES: &[&str] = &[
@@ -148,7 +152,7 @@ fn hash_tb_name() {
 #[cfg(feature = "techblox")]
 #[test]
 fn techblox_gamesave_perfect_parse() -> Result<(), ()> {
-    let mut in_file = File::open(GAMESAVE_PATH).map_err(|_| ())?;
+    let mut in_file = File::open(GAMESAVE_PATH_ALL).map_err(|_| ())?;
     let mut buf = Vec::new();
     in_file.read_to_end(&mut buf).map_err(|_| ())?;
     let gs = techblox::GameSave::parse(&mut buf.as_slice()).map_err(|_| ())?;
@@ -156,7 +160,62 @@ fn techblox_gamesave_perfect_parse() -> Result<(), ()> {
                     .write(true)
                     .truncate(true)
                     .create(true)
-                    .open(GAMESAVE_PATH2)
+                    .open(GAMESAVE_PATH_OUT)
+                    .map_err(|_| ())?;
+    gs.dump(&mut out_file).map_err(|_| ())?;
+    assert_eq!(in_file.stream_position().unwrap(), out_file.stream_position().unwrap());
+    Ok(())
+}
+
+#[cfg(feature = "techblox")]
+#[test]
+fn techblox_gamesave_parse_all() -> Result<(), ()> {
+    let mut in_file = File::open(GAMESAVE_PATH_ALL).map_err(|_| ())?;
+    let mut buf = Vec::new();
+    in_file.read_to_end(&mut buf).map_err(|_| ())?;
+    let gs = techblox::GameSave::parse(&mut buf.as_slice()).map_err(|_| ())?;
+
+    // verify
+    for i in 1..(gs.group_len as usize) {
+        assert_eq!(gs.group_headers[i-1].hash, gs.group_headers[i].hash);
+        //println!("#{} count {} vs {}", i, gs.group_headers[i-1].component_count, gs.group_headers[i].component_count);
+        assert_eq!(gs.group_headers[i-1].component_count, gs.group_headers[i].component_count);
+    }
+    for i in 0..(gs.group_len as usize) {
+        assert_eq!(gs.group_headers[i].component_count, techblox::BlockGroupEntity::serialized_components());
+        assert_eq!(gs.group_headers[i].hash, gs.cube_groups[i].hash_name());
+    }
+    for i in 1..(gs.cube_len as usize) {
+        //assert_eq!(gs.cube_headers[i-1].hash, gs.cube_headers[i].hash);
+        //println!("#{} count {} vs {}", i, gs.cube_headers[i-1].component_count, gs.cube_headers[i].component_count);
+        if gs.cube_headers[i-1].hash == gs.cube_headers[i].hash {
+            assert_eq!(gs.group_headers[i-1].component_count, gs.group_headers[i].component_count);
+        }
+    }
+    for i in 0..(gs.cube_len as usize) {
+        assert!(gs.cube_headers[i].component_count >= blocks::BlockEntity::serialized_components());
+        //println!("#{} components: {}", i, gs.cube_headers[i].component_count);
+        assert_eq!(gs.cube_headers[i].hash, gs.cube_entities[i].hash_name());
+    }
+
+    //println!("Parsed wire settings hash: {} obsolete? {}", gs.wire_settings_header.hash, gs.wire_settings_entity.settings_component.obsolete != 0);
+    assert_eq!(gs.wire_settings_header.hash, EntityHeader::from_name("GlobalWireSettingsEntityDescriptor", 0, 0, 0).hash);
+    assert_eq!(gs.wire_settings_header.hash, gs.wire_settings_entity.hash_name());
+
+    //println!("Parsed Flycam hash: {}", gs.flycam_header.hash);
+    assert_eq!(gs.flycam_header.hash, EntityHeader::from_name("FlyCamEntityDescriptorV0", 0, 0, 0).hash);
+    assert_eq!(gs.flycam_header.hash, gs.flycam_entity.hash_name());
+
+    //println!("Parsed Phycam hash: {}", gs.phycam_header.hash);
+    assert_eq!(gs.phycam_header.hash, EntityHeader::from_name("CharacterCameraEntityDescriptorV1", 0, 0, 0).hash);
+    assert_eq!(gs.phycam_header.hash, gs.phycam_entity.hash_name());
+
+    // write out
+    let mut out_file = OpenOptions::new()
+                    .write(true)
+                    .truncate(true)
+                    .create(true)
+                    .open(GAMESAVE_PATH_ALL_OUT)
                     .map_err(|_| ())?;
     gs.dump(&mut out_file).map_err(|_| ())?;
     assert_eq!(in_file.stream_position().unwrap(), out_file.stream_position().unwrap());

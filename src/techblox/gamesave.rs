@@ -93,6 +93,8 @@ impl Parsable for GameSave {
         for _i in 0..cube_count {
             let header = EntityHeader::parse(data)?;
             let hash = header.hash;
+            #[cfg(debug_assertions)]
+            println!("Handling block {} (hash: {} id:{}/{} components: {})", cubes_h.len(), hash, header.entity_id, header.group_id, header.component_count);
             cubes_h.push(header);
             cubes_e.push(lookup_hashname(hash, data)?);
         }

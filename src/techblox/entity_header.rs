@@ -1,4 +1,4 @@
-use crate::techblox::{hashname, brute_force, Parsable};
+use crate::techblox::{hashname, brute_force, Parsable, blocks::lookup_name_by_hash};
 use libfj_parsable_macro_derive::*;
 
 /// An entity's header information.
@@ -22,6 +22,17 @@ impl EntityHeader {
     /// This is slow and cannot guarantee a correct result. Use is discouraged.
     pub fn guess_name(&self) -> String {
         brute_force(self.hash)
+    }
+
+    /// Lookup the name from the header's hash from a list of known entity names.
+    ///
+    /// This is much faster than guess_name() and is guaranteed to return a correct result if one exists.
+    /// If the hash has no known correct name, None is returned instead.
+    pub fn lookup_name(&self) -> Option<String> {
+        if let Some(name) = lookup_name_by_hash(self.hash) {
+            return Some(name.to_string());
+        }
+        None
     }
 
     /// Create an entity header using the hash of `name`.
