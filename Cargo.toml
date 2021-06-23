@@ -8,6 +8,10 @@ license = "MIT"
 homepage = "https://github.com/NGnius/libfj"
 repository = "https://github.com/NGnius/libfj"
 readme = "README.md"
+exclude = [
+    "test.sh",
+    "**/*.out.Techblox"
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
