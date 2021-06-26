@@ -1,3 +1,5 @@
+use std::convert::AsRef;
+
 use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent};
 use crate::techblox::blocks::{DBEntityStruct, PositionEntityStruct, ScalingEntityStruct, RotationEntityStruct,
 SkewComponent, GridRotationStruct, SerializedGridConnectionsEntityStruct, SerializedBlockPlacementInfoStruct,
@@ -75,3 +77,13 @@ impl SerializedEntityDescriptor for BlockEntity {
         Self::hash("StandardBlockEntityDescriptorV4") // 1357220432
     }
 }
+
+impl AsRef<BlockEntity> for BlockEntity {
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+pub trait Block: SerializedEntityDescriptor + AsRef<BlockEntity> {}
+
+impl Block for BlockEntity {}

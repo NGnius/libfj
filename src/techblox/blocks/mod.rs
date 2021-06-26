@@ -12,7 +12,7 @@ mod tyre;
 mod wheel_rig;
 mod wire_entity;
 
-pub use block_entity::{BlockEntity};
+pub use block_entity::{BlockEntity, Block};
 pub use common_components::{DBEntityStruct, PositionEntityStruct, ScalingEntityStruct, RotationEntityStruct,
 SkewComponent, GridRotationStruct, SerializedGridConnectionsEntityStruct, SerializedBlockPlacementInfoStruct,
 SerializedCubeMaterialStruct, SerializedUniformBlockScaleEntityStruct, SerializedColourParameterEntityStruct,

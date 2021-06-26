@@ -1,5 +1,7 @@
+use std::convert::AsRef;
+
 use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent,
-blocks::{BlockEntity}};
+blocks::{BlockEntity, Block}};
 use libfj_parsable_macro_derive::*;
 
 /// Tire entity descriptor
@@ -26,3 +28,11 @@ impl SerializedEntityDescriptor for TyreEntity {
         Self::hash("TyreEntityDescriptorV1") // 1517625162
     }
 }
+
+impl AsRef<BlockEntity> for TyreEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block
+    }
+}
+
+impl Block for TyreEntity {}

@@ -1,5 +1,7 @@
+use std::convert::AsRef;
+
 use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent,
-blocks::{BlockEntity}};
+blocks::{BlockEntity, Block}};
 use libfj_parsable_macro_derive::*;
 
 /// Joint block entity descriptor
@@ -26,3 +28,11 @@ impl SerializedEntityDescriptor for JointBlockEntity {
         Self::hash("JointBlockEntityDescriptorV3") // 3586818581
     }
 }
+
+impl AsRef<BlockEntity> for JointBlockEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block
+    }
+}
+
+impl Block for JointBlockEntity {}

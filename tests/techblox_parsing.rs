@@ -6,6 +6,8 @@ use libfj::techblox::{SerializedEntityDescriptor, Parsable, blocks, EntityHeader
 use std::io::{Read, Seek};
 #[cfg(feature = "techblox")]
 use std::fs::{File, OpenOptions};
+#[cfg(feature = "techblox")]
+use std::convert::AsRef;
 
 #[cfg(feature = "techblox")]
 const GAMESAVE_PATH: &str = "tests/GameSave.Techblox";
@@ -184,6 +186,10 @@ fn techblox_gamesave_parse_all() -> Result<(), ()> {
     for i in 0..(gs.group_len as usize) {
         assert_eq!(gs.group_headers[i].component_count, techblox::BlockGroupEntity::serialized_components());
         assert_eq!(gs.group_headers[i].hash, gs.cube_groups[i].hash_name());
+        /*let pos = format!("({}, {}, {})", gs.cube_groups[i].block_group_transform.block_group_grid_position.x, gs.cube_groups[i].block_group_transform.block_group_grid_position.y, gs.cube_groups[i].block_group_transform.block_group_grid_position.z);
+        let rot = format!("({}, {}, {}, {})", gs.cube_groups[i].block_group_transform.block_group_grid_rotation.value.x, gs.cube_groups[i].block_group_transform.block_group_grid_rotation.value.y, gs.cube_groups[i].block_group_transform.block_group_grid_rotation.value.z,
+        gs.cube_groups[i].block_group_transform.block_group_grid_rotation.value.w);
+        println!("block id: {}, position: {}, rotation: {}", gs.cube_groups[i].saved_block_group_id.saved_block_group_id, pos, rot);*/
     }
     for i in 1..(gs.cube_len as usize) {
         //assert_eq!(gs.cube_headers[i-1].hash, gs.cube_headers[i].hash);
@@ -220,4 +226,30 @@ fn techblox_gamesave_parse_all() -> Result<(), ()> {
     gs.dump(&mut out_file).map_err(|_| ())?;
     assert_eq!(in_file.stream_position().unwrap(), out_file.stream_position().unwrap());
     Ok(())
+}
+
+#[cfg(feature = "techblox")]
+#[test]
+fn techblox_gamesave_block_groups() -> Result<(), ()> {
+    let mut in_file = File::open(GAMESAVE_PATH_ALL).map_err(|_| ())?;
+    let mut buf = Vec::new();
+    in_file.read_to_end(&mut buf).map_err(|_| ())?;
+    let gs = techblox::GameSave::parse(&mut buf.as_slice()).map_err(|_| ())?;
+
+    for block_trait in &gs.cube_entities {
+        let block: &blocks::BlockEntity = block_trait.as_ref().as_ref();
+        //println!("Block @ ({}, {}, {})", block.pos_component.position.x, block.pos_component.position.y, block.pos_component.position.z);
+        assert!(is_in_block_groups(block.group_component.current_block_group, &gs.cube_groups));
+    }
+    Ok(())
+}
+
+#[cfg(feature = "techblox")]
+fn is_in_block_groups(id: i32, block_groups: &Vec<techblox::BlockGroupEntity>) -> bool {
+    for bg in block_groups {
+        if bg.saved_block_group_id.saved_block_group_id == id {
+            return true;
+        }
+    }
+    false
 }

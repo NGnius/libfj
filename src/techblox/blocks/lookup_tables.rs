@@ -1,6 +1,6 @@
 use std::io::Read;
 
-use crate::techblox::{Parsable, SerializedEntityDescriptor};
+use crate::techblox::{Parsable};
 use crate::techblox::blocks::*;
 
 const HASHNAMES: &[&str] = &[
@@ -70,7 +70,8 @@ const HASHNAMES: &[&str] = &[
     "CharacterCameraEntityDescriptorV1",
 ];
 
-pub fn lookup_hashname(hash: u32, data: &mut dyn Read) -> std::io::Result<Box<dyn SerializedEntityDescriptor>> {
+pub fn lookup_hashname(hash: u32, data: &mut dyn Read) ->
+    std::io::Result<Box<dyn Block>> {
     Ok(match hash {
         1357220432 /*StandardBlockEntityDescriptorV4*/ => Box::new(BlockEntity::parse(data)?),
         2281299333 /*PilotSeatEntityDescriptorV4*/ => Box::new(PilotSeatEntity::parse(data)?),

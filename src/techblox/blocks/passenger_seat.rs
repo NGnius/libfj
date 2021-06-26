@@ -1,5 +1,7 @@
+use std::convert::AsRef;
+
 use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent,
-blocks::{BlockEntity, SeatFollowCamComponent}};
+blocks::{BlockEntity, SeatFollowCamComponent, Block}};
 use libfj_parsable_macro_derive::*;
 
 /// Passenger seat entity descriptor (V4)
@@ -32,3 +34,11 @@ impl SerializedEntityDescriptor for PassengerSeatEntity {
         Self::hash("PassengerSeatEntityDescriptorV4") // 1360086092
     }
 }
+
+impl AsRef<BlockEntity> for PassengerSeatEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block
+    }
+}
+
+impl Block for PassengerSeatEntity {}

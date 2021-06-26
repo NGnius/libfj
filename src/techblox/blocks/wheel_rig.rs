@@ -1,5 +1,7 @@
+use std::convert::AsRef;
+
 use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent,
-blocks::{BlockEntity, TweakableJointDampingComponent}};
+blocks::{BlockEntity, TweakableJointDampingComponent, Block}};
 use libfj_parsable_macro_derive::*;
 
 /// Wheel rig entity descriptor
@@ -37,6 +39,14 @@ impl SerializedEntityDescriptor for WheelRigEntity {
     }
 }
 
+impl AsRef<BlockEntity> for WheelRigEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block
+    }
+}
+
+impl Block for WheelRigEntity {}
+
 /// Wheel rig entity descriptor
 #[derive(Copy, Clone, Parsable)]
 pub struct WheelRigSteerableEntity {
@@ -67,6 +77,14 @@ impl SerializedEntityDescriptor for WheelRigSteerableEntity {
         Self::hash("WheelRigSteerableEntityDescriptor") // 1864425618
     }
 }
+
+impl AsRef<BlockEntity> for WheelRigSteerableEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block.as_ref()
+    }
+}
+
+impl Block for WheelRigSteerableEntity {}
 
 /// Wheel rig settings entity component.
 #[derive(Copy, Clone, Parsable)]

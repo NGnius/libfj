@@ -1,9 +1,9 @@
 use chrono::{naive::NaiveDate, Datelike};
 use std::io::{Read, Write};
 
-use crate::techblox::{EntityHeader, BlockGroupEntity, parse_i64, parse_u32, Parsable, SerializedEntityDescriptor,
+use crate::techblox::{EntityHeader, BlockGroupEntity, parse_i64, parse_u32, Parsable,
 SerializedFlyCamEntity, SerializedPhysicsCameraEntity};
-use crate::techblox::blocks::{lookup_hashname, SerializedWireEntity, SerializedGlobalWireSettingsEntity};
+use crate::techblox::blocks::{lookup_hashname, SerializedWireEntity, SerializedGlobalWireSettingsEntity, Block};
 
 /// A collection of cubes and other data from a GameSave.techblox file
 //#[derive(Clone)]
@@ -37,7 +37,7 @@ pub struct GameSave {
     pub cube_headers: Vec<EntityHeader>,
 
     /// Blocks
-    pub cube_entities: Vec<Box<dyn SerializedEntityDescriptor>>,
+    pub cube_entities: Vec<Box<dyn Block>>,
 
     /// Amount of wires in the save data, as claimed by the file.
     pub wire_len: u32,
@@ -89,7 +89,7 @@ impl Parsable for GameSave {
 
         // parse cube data
         let mut cubes_h = Vec::<EntityHeader>::with_capacity(cube_count as usize);
-        let mut cubes_e = Vec::<Box<dyn SerializedEntityDescriptor>>::with_capacity(cube_count as usize);
+        let mut cubes_e = Vec::<Box<dyn Block>>::with_capacity(cube_count as usize);
         for _i in 0..cube_count {
             let header = EntityHeader::parse(data)?;
             let hash = header.hash;

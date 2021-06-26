@@ -1,5 +1,7 @@
+use std::convert::AsRef;
+
 use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent,
-blocks::{BlockEntity}};
+blocks::{BlockEntity, Block}};
 use libfj_parsable_macro_derive::*;
 
 /// Damped angular spring entity descriptor
@@ -37,6 +39,14 @@ impl SerializedEntityDescriptor for DampedAngularSpringEntity {
     }
 }
 
+impl AsRef<BlockEntity> for DampedAngularSpringEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block
+    }
+}
+
+impl Block for DampedAngularSpringEntity {}
+
 /// Damped spring entity descriptor
 #[derive(Copy, Clone, Parsable)]
 pub struct DampedSpringEntity {
@@ -71,6 +81,14 @@ impl SerializedEntityDescriptor for DampedSpringEntity {
         Self::hash("DampedSpringEntityDescriptorV5") // 2892049599
     }
 }
+
+impl AsRef<BlockEntity> for DampedSpringEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block
+    }
+}
+
+impl Block for DampedSpringEntity {}
 
 /// Joint settings entity component.
 #[derive(Copy, Clone, Parsable)]

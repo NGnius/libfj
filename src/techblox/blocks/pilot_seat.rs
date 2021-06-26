@@ -1,4 +1,6 @@
-use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent, blocks::BlockEntity};
+use std::convert::AsRef;
+
+use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent, blocks::{BlockEntity, Block}};
 use libfj_parsable_macro_derive::*;
 
 /// Pilot seat entity descriptor (V4)
@@ -31,6 +33,14 @@ impl SerializedEntityDescriptor for PilotSeatEntity {
         Self::hash("PilotSeatEntityDescriptorV4") // 2281299333
     }
 }
+
+impl AsRef<BlockEntity> for PilotSeatEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block
+    }
+}
+
+impl Block for PilotSeatEntity {}
 
 /// Seat settings entity component.
 #[derive(Copy, Clone, Parsable)]

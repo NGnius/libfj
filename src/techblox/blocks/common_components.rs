@@ -106,7 +106,7 @@ impl SerializedEntityComponent for SerializedColourParameterEntityStruct {}
 /// Block group component.
 #[derive(Copy, Clone, Parsable)]
 pub struct BlockGroupEntityComponent {
-    /// Index of colour in Techblox palette
+    /// Index of block in Techblox block groups (deserialized in earlier part of game save)
     pub current_block_group: i32,
 }
 

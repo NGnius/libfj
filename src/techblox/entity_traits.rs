@@ -1,4 +1,5 @@
 use std::io::{Read, Write};
+use std::any::Any;
 
 /// Standard trait for parsing Techblox game save data.
 pub trait Parsable {
@@ -26,7 +27,7 @@ pub trait SerializedEntityDescriptor: Parsable {
 
 /// Serializable entity component.
 /// Components are the atomic unit of entities.
-pub trait SerializedEntityComponent: Parsable {
+pub trait SerializedEntityComponent: Parsable + Any {
     /// Raw size of struct, in bytes.
     fn size() -> usize where Self: Sized {
         std::mem::size_of::<Self>()

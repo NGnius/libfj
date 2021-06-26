@@ -1,5 +1,7 @@
+use std::convert::AsRef;
+
 use crate::techblox::{SerializedEntityDescriptor, Parsable, SerializedEntityComponent,
-blocks::{BlockEntity}};
+blocks::{BlockEntity, Block}};
 use libfj_parsable_macro_derive::*;
 
 /// Engine entity descriptor
@@ -32,6 +34,14 @@ impl SerializedEntityDescriptor for EngineBlockEntity {
         Self::hash("EngineBlockEntityDescriptor") // 1757314505
     }
 }
+
+impl AsRef<BlockEntity> for EngineBlockEntity {
+    fn as_ref(&self) -> &BlockEntity {
+        &self.block
+    }
+}
+
+impl Block for EngineBlockEntity {}
 
 /// Engine settings entity component.
 #[derive(Copy, Clone, Parsable)]
