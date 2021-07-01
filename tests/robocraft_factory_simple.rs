@@ -58,7 +58,7 @@ fn robocraft_factory_custom_query_simple() -> Result<(), ()> {
 #[cfg(all(feature = "simple", feature = "robocraft"))]
 fn robocraft_factory_player_query() -> Result<(), ()> {
     let result = builder()
-        .text("Baerentoeter".to_string())
+        .text("MilanZhi".to_string()) // there is a featured robot by this user, so this should never fail
         .text_search_type(robocraft::FactoryTextSearchType::Player)
         .items_per_page(10)
         .send();

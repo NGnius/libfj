@@ -1,4 +1,4 @@
-use fasthash::murmur3::hash32_with_seed;
+use highhash::murmur::hash32_with_seed;
 use std::sync::mpsc::{channel, Sender};
 use std::thread;
 
