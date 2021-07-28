@@ -78,7 +78,7 @@ async fn robocraft_factory_custom_query() -> Result<(), ()> {
 #[tokio::test]
 async fn robocraft_factory_player_query() -> Result<(), ()> {
     let result = builder()
-        .text("MilanZhi".to_string()) // there is a featured robot by this user, so this should never fail
+        .text("Spacecam".to_string()) // there is a featured robot by this user, so this should never fail
         .text_search_type(robocraft::FactoryTextSearchType::Player)
         .items_per_page(10)
         .send().await;

@@ -1,6 +1,6 @@
 [package]
 name = "libfj"
-version = "0.5.1"
+version = "0.5.2"
 authors = ["NGnius (Graham) <ngniusness@gmail.com>"]
 edition = "2018"
 description = "An unofficial collection of APIs used in FreeJam games and mods"
@@ -35,8 +35,10 @@ genmesh = {version = "^0.6", optional = true}
 tokio = { version = "1.4.0", features = ["macros"]}
 
 [features]
+all = ["simple", "robocraft", "cardlife", "techblox", "convert"]
+default = ["all"]
 simple = ["ureq"]
-robocraft = ["reqwest"]
+robocraft = ["reqwest", "ureq"]
 cardlife = ["reqwest"]
 techblox = ["chrono", "highhash", "half", "libfj_parsable_macro_derive"]
 convert = ["obj", "genmesh"]
