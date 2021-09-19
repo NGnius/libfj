@@ -22,7 +22,7 @@ pub struct AuthenticationInfo {
     pub display_name: String,
     /// Account purchases (???)
     #[serde(rename = "Purchases")]
-    purchases: Vec<String>, // ???
+    purchases: Vec<usize>, // ???
     /// Account flags (dev, admin, etc.???)
     #[serde(rename = "Flags")]
     flags: Vec<String>, // ???

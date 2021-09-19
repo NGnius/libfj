@@ -37,22 +37,26 @@ impl LiveAPI {
     pub async fn authenticate_email(&mut self, email: &str, password: &str) -> Result<AuthenticationInfo, Error> {
         let url = Url::parse(AUTHENTICATION_DOMAIN)
             .unwrap()
-            .join("/api/auth/authenticate")
+            .join("api/auth/authenticate")
             .unwrap();
         let payload = AuthenticationPayload {
             email_address: email.to_string(),
             password: password.to_string()
         };
-        let result = self.client.post(url)
+        let result = self.client.post(url.clone())
             .json(&payload)
             .send().await;
         if let Ok(response) = result {
+            //println!("Resp: {}", response.text().await.unwrap());
             let res = response.json::<AuthenticationInfo>().await;
             if let Ok(auth) = &res {
                 self.auth = Some(auth.clone());
             }
             return res;
         }
+        /*let result = self.client.post(url)
+            .json(&payload)
+            .send().await;*/
         Err(result.err().unwrap())
     }
     
