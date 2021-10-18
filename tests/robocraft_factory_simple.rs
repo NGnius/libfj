@@ -31,6 +31,17 @@ fn assert_factory_list(robo_info: robocraft::FactoryInfo<robocraft::RoboShopItem
 
 #[test]
 #[cfg(all(feature = "simple", feature = "robocraft"))]
+fn robocraft_factory_query_simple() -> Result<(), ()> {
+    let result = robocraft_simple::FactoryAPI::new().list();
+    assert!(result.is_ok());
+    let robo_info = result.unwrap();
+    assert_factory_list(robo_info)?;
+    Ok(())
+}
+
+
+#[test]
+#[cfg(all(feature = "simple", feature = "robocraft"))]
 fn robocraft_factory_custom_query_simple() -> Result<(), ()> {
     let result = builder()
         .movement_or(robocraft::FactoryMovementType::Wheels)
@@ -57,8 +68,16 @@ fn robocraft_factory_custom_query_simple() -> Result<(), ()> {
 #[test]
 #[cfg(all(feature = "simple", feature = "robocraft"))]
 fn robocraft_factory_player_query() -> Result<(), ()> {
+    // hard-coding a user inevitably fails, so that's grab one from the front page
+    let username = robocraft_simple::FactoryAPI::new()
+        .list()
+        .unwrap() // covered by another test case
+        .response
+        .roboshop_items[0]
+        .added_by
+        .clone();
     let result = builder()
-        .text("MilanZhi".to_string()) // there is a featured robot by this user, so this should never fail
+        .text(username) // there is a featured robot by this user, so this should never fail
         .text_search_type(robocraft::FactoryTextSearchType::Player)
         .items_per_page(10)
         .send();
