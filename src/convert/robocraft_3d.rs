@@ -1,27 +1,37 @@
-use genmesh::{generators::Cube, Quad, MapToVertices, Vertices};
+use genmesh::{generators::Cube, Quad, MapToVertices, Vertices, Vertex};
 use obj;
 use crate::robocraft;
 
+const SCALE: f32 = 0.5;
+
 /// Convert a Robocraft robot to a 3D model in Wavefront OBJ format.
 pub fn cubes_to_model(robot: robocraft::Cubes) -> obj::Obj {
-    let mut positions = Vec::<[f32; 3]>::new();
-    let mut normals = Vec::<[f32; 3]>::new();
-    let mut objects = Vec::<obj::Object>::new();
+    cubes_to_model_with_lut(robot, default_model_lut)
+}
+
+/// Convert a Robocraft robot to a 3D model in Wavefront OBJ format using the provided lookup table function.
+pub fn cubes_to_model_with_lut<F: FnMut(u32) -> Vec<Quad<Vertex>>>(robot: robocraft::Cubes, mut lut: F) -> obj::Obj {
+    let mut positions = Vec::<[f32; 3]>::new(); // vertex positions
+    let mut normals = Vec::<[f32; 3]>::new(); // vertex normals
+    let mut objects = Vec::<obj::Object>::new(); // blocks
     let mut last = 0;
     for cube in robot.into_iter() {
+        // generate simple cube for every block
+        // TODO rotate blocks
+        let vertices = lut(cube.id); // Use lookup table to find correct id <-> block translation
         positions.extend::<Vec::<[f32; 3]>>(
-            Cube::new().vertex(|v|
-                [(v.pos.x * 0.5) + (cube.x as f32), (v.pos.y * 0.5) + (cube.y as f32), (v.pos.z * 0.5) + (cube.z as f32)])
+            vertices.clone().into_iter().vertex(|v|
+                [(v.pos.x * SCALE) + (cube.x as f32), (v.pos.y * SCALE) + (cube.y as f32), (v.pos.z * SCALE) + (cube.z as f32)])
             .vertices()
             .collect()
         );
         normals.extend::<Vec::<[f32; 3]>>(
-            Cube::new().vertex(|v|
-                [(v.normal.x * 0.5) + (cube.x as f32), (v.normal.y * 0.5) + (cube.y as f32), (v.normal.z * 0.5) + (cube.z as f32)])
+            vertices.clone().into_iter().vertex(|v|
+                [(v.normal.x * SCALE) + (cube.x as f32), (v.normal.y * SCALE) + (cube.y as f32), (v.normal.z * SCALE) + (cube.z as f32)])
             .vertices()
             .collect()
         );
-        let polys = Cube::new().vertex(|_| {last+=1; return last-1;})
+        let polys = vertices.clone().into_iter().vertex(|_| {last+=1; return last-1;})
             .map(|Quad{x: v0, y: v1, z: v2, w: v3}|
                 obj::SimplePolygon(vec![
                 obj::IndexTuple(v0, Some(0), Some(v0)),
@@ -61,5 +71,12 @@ pub fn cubes_to_model(robot: robocraft::Cubes) -> obj::Obj {
             material_libs: Vec::new(),
         },
         path: std::path::PathBuf::new(),
+    }
+}
+
+pub fn default_model_lut(id: u32) -> Vec<Quad<Vertex>> {
+    // TODO generate non-cube blocks properly
+    match id {
+        _ => Cube::new().collect(),
     }
 }

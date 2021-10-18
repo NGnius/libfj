@@ -5,4 +5,4 @@
 #[cfg(feature = "robocraft")]
 mod robocraft_3d;
 #[cfg(feature = "robocraft")]
-pub use robocraft_3d::cubes_to_model;
+pub use robocraft_3d::{cubes_to_model, cubes_to_model_with_lut};
