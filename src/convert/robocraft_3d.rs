@@ -7,29 +7,29 @@ const SCALE: f32 = 0.5;
 
 const ROTATIONS: [Euler<Deg<f32>>; 24] = [
     Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 0
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 2
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 4
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 6
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 8
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 10
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 12
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 14
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 16
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 18
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 20
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)},
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 22
-    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(0.0)}, // 23
+    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(90.0)},
+    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(180.0)}, // 2
+    Euler{x: Deg(0.0), y: Deg(0.0), z: Deg(-90.0)},
+    Euler{x: Deg(0.0), y: Deg(90.0), z: Deg(0.0)}, // 4
+    Euler{x: Deg(0.0), y: Deg(90.0), z: Deg(90.0)},
+    Euler{x: Deg(-90.0), y: Deg(-90.0), z: Deg(0.0)}, // 6
+    Euler{x: Deg(0.0), y: Deg(90.0), z: Deg(-90.0)},
+    Euler{x: Deg(0.0), y: Deg(-90.0), z: Deg(90.0)}, // 8
+    Euler{x: Deg(0.0), y: Deg(-90.0), z: Deg(-90.0)},
+    Euler{x: Deg(90.0), y: Deg(-90.0), z: Deg(0.0)}, // 10
+    Euler{x: Deg(90.0), y: Deg(90.0), z: Deg(0.0)},
+    Euler{x: Deg(-90.0), y: Deg(90.0), z: Deg(0.0)}, // 12
+    Euler{x: Deg(0.0), y: Deg(90.0), z: Deg(180.0)},
+    Euler{x: Deg(0.0), y: Deg(180.0), z: Deg(0.0)}, // 14
+    Euler{x: Deg(0.0), y: Deg(180.0), z: Deg(90.0)},
+    Euler{x: Deg(0.0), y: Deg(180.0), z: Deg(0.0)}, // 16
+    Euler{x: Deg(0.0), y: Deg(180.0), z: Deg(180.0)},
+    Euler{x: Deg(0.0), y: Deg(-90.0), z: Deg(-90.0)}, // 18
+    Euler{x: Deg(0.0), y: Deg(-90.0), z: Deg(0.0)},
+    Euler{x: Deg(90.0), y: Deg(0.0), z: Deg(180.0)}, // 20
+    Euler{x: Deg(90.0), y: Deg(180.0), z: Deg(0.0)},
+    Euler{x: Deg(-90.0), y: Deg(0.0), z: Deg(0.0)}, // 22
+    Euler{x: Deg(-90.0), y: Deg(180.0), z: Deg(0.0)}, // 23
 ];
 
 /// Convert a Robocraft robot to a 3D model in Wavefront OBJ format.
