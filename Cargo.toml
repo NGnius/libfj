@@ -30,6 +30,7 @@ libfj_parsable_macro_derive = {version = "0.5.3", optional = true}
 #libfj_parsable_macro_derive = {path = "./parsable_macro_derive", optional = true}
 obj = {version = "^0.10", optional = true}
 genmesh = {version = "^0.6", optional = true}
+cgmath = {version = "^0.18", optional = true}
 
 [dev-dependencies]
 tokio = { version = "1.4.0", features = ["macros"]}
@@ -41,4 +42,4 @@ simple = ["ureq"]
 robocraft = ["reqwest", "ureq"]
 cardlife = ["reqwest"]
 techblox = ["chrono", "highhash", "half", "libfj_parsable_macro_derive"]
-convert = ["obj", "genmesh"]
+convert = ["obj", "genmesh", "cgmath"]
