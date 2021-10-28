@@ -32,6 +32,11 @@ const ROTATIONS: [Euler<Deg<f32>>; 24] = [
     Euler{x: Deg(-90.0), y: Deg(180.0), z: Deg(0.0)}, // 23
 ];
 
+/// Convert a Robocraft robot's orientation enum into a physical rotation
+pub fn cube_rotation_to_quat(orientation: u8) -> Quaternion<f32> {
+    ROTATIONS[orientation as usize].into()
+}
+
 /// Convert a Robocraft robot to a 3D model in Wavefront OBJ format.
 pub fn cubes_to_model(robot: robocraft::Cubes) -> obj::Obj {
     cubes_to_model_with_lut(robot, default_model_lut)
@@ -47,7 +52,7 @@ pub fn cubes_to_model_with_lut<F: FnMut(u32) -> Vec<Quad<Vertex>>>(robot: robocr
         // generate simple cube for every block
         // TODO rotate blocks
         let vertices = lut(cube.id); // Use lookup table to find correct id <-> block translation
-        let rotation: Quaternion<_> = ROTATIONS[cube.orientation as usize].into();
+        let rotation: Quaternion<_> = cube_rotation_to_quat(cube.orientation);
         positions.extend::<Vec::<[f32; 3]>>(
             vertices.clone().into_iter().vertex(|v|
                 {
