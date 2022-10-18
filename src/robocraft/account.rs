@@ -85,7 +85,7 @@ pub(crate) struct AuthenticationUsernamePayload {
     pub password: String,
 }
 
-#[derive(Deserialize, Serialize, Clone)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub(crate) struct AuthenticationResponseInfo {
     #[serde(rename = "Token")]
     pub token: String,

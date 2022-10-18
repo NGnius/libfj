@@ -13,3 +13,5 @@ pub mod robocraft_simple;
 pub mod techblox;
 #[cfg(feature = "convert")]
 pub mod convert;
+#[cfg(feature = "robocraft")]
+pub mod robocraft2;

@@ -1,6 +1,8 @@
 #[cfg(feature = "robocraft")]
 use libfj::robocraft;
 #[cfg(feature = "robocraft")]
+use libfj::robocraft2;
+#[cfg(feature = "robocraft")]
 use std::convert::From;
 
 #[cfg(feature = "robocraft")]
@@ -25,6 +27,24 @@ async fn robocraft_factory_default_query() -> Result<(), ()> {
         assert_ne!(robot.added_by_display_name, "");
         assert_ne!(robot.thumbnail, "");
         println!("FactoryRobotListInfo.to_string() -> `{}`", robot.to_string());
+    }
+    Ok(())
+}
+
+#[cfg(feature = "robocraft")]
+#[tokio::test]
+async fn robocraft2_factory_default_query() -> Result<(), ()> {
+    let api = robocraft2::FactoryAPI::with_auth(Box::new(robocraft2::PortalTokenProvider::portal().unwrap()));
+    let result = api.list().await;
+    //assert!(result.is_ok());
+    let robo_info = result.unwrap();
+    assert_ne!(robo_info.results.len(), 0);
+    for robot in &robo_info.results {
+        assert_ne!(robot.robot.name, "");
+        assert_ne!(robot.robot.creator_id, "");
+        assert_ne!(robot.robot.creator_id, "");
+        assert_ne!(robot.robot.image, "");
+        //println!("FactoryRobotListInfo.to_string() -> `{}`", robot.to_string());
     }
     Ok(())
 }

@@ -16,7 +16,7 @@ pub use self::cubes::{Cube, Cubes};
 mod auth;
 pub use self::auth::{ITokenProvider, DefaultTokenProvider};
 
-mod account;
+pub(crate) mod account;
 pub use self::account::{AuthenticatedTokenProvider, AccountInfo};
 
 /// Token defined in a javascript file from Freejam which never expires
