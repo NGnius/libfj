@@ -4,12 +4,13 @@ use reqwest::{Client, Error};
 //use cookie_store::CookieStore;
 //use url::{Url};
 use serde_json::from_slice;
+use chrono::{DateTime, naive::NaiveDateTime, Utc};
 
 /// Token generator for authenticated API endpoints
 #[async_trait::async_trait]
 pub trait ITokenProvider {
     /// Retrieve the token to use
-    async fn token(&mut self) -> Result<String, ()>;
+    async fn token(&mut self) -> Result<String, Error>;
 }
 
 /// Token provider for an existing Freejam account, authenticated through the web browser portal.
@@ -22,6 +23,8 @@ pub struct PortalTokenProvider {
     jwt: PortalCheckResponse,
     /// Ureq HTTP client
     client: Client,
+    /// target game
+    target: String,
 }
 
 impl PortalTokenProvider {
@@ -34,7 +37,7 @@ impl PortalTokenProvider {
     pub async fn target(value: String) -> Result<Self, Error> {
         let client = Client::new();
         let payload = PortalStartPayload {
-            target: value,
+            target: value.clone(),
         };
         let start_response = client.post("https://account.freejamgames.com/api/authenticate/portal/start")
             .header("Content-Type", "application/json")
@@ -62,7 +65,7 @@ impl PortalTokenProvider {
         let check_res = check_response.json::<PortalCheckResponse>().await?;
 
         // login with token we just got
-       Self::login_internal(check_res, client).await
+       Self::login_internal(check_res, client, value).await
     }
 
     pub async fn with_email(email: &str, password: &str) -> Result<Self, Error> {
@@ -96,7 +99,7 @@ impl PortalTokenProvider {
     /// Automatically validate portal
     async fn auto_portal(client: Client, value: String, token: String) -> Result<Self, Error> {
         let payload = PortalStartPayload {
-            target: value,
+            target: value.clone(),
         };
         let start_response = client.post("https://account.freejamgames.com/api/authenticate/portal/start")
             .header("Content-Type", "application/json")
@@ -121,10 +124,20 @@ impl PortalTokenProvider {
         let check_res = check_response.json::<PortalCheckResponse>().await?;
 
         // login with token we just got
-       Self::login_internal(check_res, client).await
+       Self::login_internal(check_res, client, value).await
     }
 
-    async fn login_internal(token_data: PortalCheckResponse, client: Client) -> Result<Self, Error> {
+    async fn login_internal(token_data: PortalCheckResponse, client: Client, target: String) -> Result<Self, Error> {
+        let progress_res = Self::login_step(&token_data, &client).await?;
+        Ok(Self {
+            token: progress_res,
+            jwt: token_data,
+            client: client,
+            target: target,
+        })
+    }
+
+    async fn login_step(token_data: &PortalCheckResponse, client: &Client) -> Result<ProgressionLoginResponse, Error> {
         let payload = ProgressionLoginPayload {
             token: token_data.token.clone(),
         };
@@ -132,17 +145,12 @@ impl PortalTokenProvider {
             .header("Content-Type", "application/json")
             .json(&payload)
             .send().await?;
-        let progress_res = progress_response.json::<ProgressionLoginResponse>().await?;
-        Ok(Self {
-            token: progress_res,
-            jwt: token_data,
-            client: client,
-        })
+        progress_response.json::<ProgressionLoginResponse>().await
     }
 
     /// Login using the portal token data from a previous portal authentication
-    pub async fn login(token_data: PortalCheckResponse) -> Result<Self, Error> {
-        Self::login_internal(token_data, Client::new()).await
+    pub async fn login(token_data: PortalCheckResponse, target: String) -> Result<Self, Error> {
+        Self::login_internal(token_data, Client::new(), target).await
     }
 
     pub fn get_account_info(&self) -> Result<AccountInfo, Error> {
@@ -156,13 +164,27 @@ impl PortalTokenProvider {
 
 #[async_trait::async_trait]
 impl ITokenProvider for PortalTokenProvider {
-    async fn token(&mut self) -> Result<String, ()> {
-        // TODO re-authenticate when expired
-        if let Some(token) = self.token.token.clone() {
-            Ok(token)
-        } else {
-            Err(())
+    async fn token(&mut self) -> Result<String, Error> {
+        let decoded_jwt = self.jwt.decode_jwt_data();
+        let expiry = DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(decoded_jwt.exp as i64, 0), Utc);
+        let now = Utc::now();
+        if now >= expiry || self.token.token.is_none() {
+            // refresh token when expired
+            // TODO make sure refresh token isn't also expired
+            // (it would be a bit concerning if you decide to run libfj for 1+ month, though)
+            let payload = RefreshTokenPayload {
+                target: self.target.clone(),
+                refresh_token: self.jwt.refresh_token.clone(),
+                public_id: decoded_jwt.public_id,
+            };
+            let refresh_response = self.client.post("https://account.freejamgames.com/api/authenticate/token/refresh")
+                .header("Content-Type", "application/json")
+                .json(&payload)
+                .send().await?;
+            self.jwt = refresh_response.json::<PortalCheckResponse>().await?;
+            self.token = Self::login_step(&self.jwt, &self.client).await?;
         }
+        Ok(self.token.token.clone().unwrap())
     }
 }
 
@@ -247,6 +269,16 @@ pub(crate) struct ProgressionLoginResponse {
     pub token: Option<String>,
     #[serde(rename = "serverToken")]
     pub server_token: Option<String>,
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub(crate) struct RefreshTokenPayload {
+    #[serde(rename = "Target")]
+    pub target: String, // "Techblox"
+    #[serde(rename = "RefreshToken")]
+    pub refresh_token: String,
+    #[serde(rename = "PublicId")]
+    pub public_id: String,
 }
 
 /// Robocraft2 account information.
