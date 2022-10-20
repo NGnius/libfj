@@ -34,11 +34,11 @@ fn robocraft_account() -> Result<(), ()> {
 }
 
 // this requires human-interaction so it's disabled by default
-#[cfg(feature = "robocraft")]
+#[cfg(feature = "robocraft2")]
 #[allow(dead_code)]
-//#[test]
-fn robocraft2_account() -> Result<(), ()> {
-    let token_maybe = robocraft2::PortalTokenProvider::portal();
+//#[tokio::test]
+async fn robocraft2_account() -> Result<(), ()> {
+    let token_maybe = robocraft2::PortalTokenProvider::portal().await;
     assert!(token_maybe.is_ok());
     let token_provider = token_maybe.unwrap();
     let account_maybe = token_provider.get_account_info();
@@ -46,5 +46,21 @@ fn robocraft2_account() -> Result<(), ()> {
     let account = account_maybe.unwrap();
     assert_eq!(account.display_name, "NGniusness");
     assert_eq!(account.created_date, "2014-09-17T21:02:46");
+    Ok(())
+}
+
+// this requires human-interaction so it's disabled by default
+#[cfg(feature = "robocraft2")]
+#[allow(dead_code)]
+#[tokio::test]
+async fn robocraft2_simple_account() -> Result<(), ()> {
+    let token_maybe = robocraft2::PortalTokenProvider::with_username("FJAPIC00L", "P4$$w0rd").await;
+    assert!(token_maybe.is_ok());
+    let token_provider = token_maybe.unwrap();
+    let account_maybe = token_provider.get_account_info();
+    assert!(account_maybe.is_ok());
+    let account = account_maybe.unwrap();
+    assert_eq!(account.display_name, "FJAPIC00L");
+    assert_eq!(account.created_date, "2019-01-18T14:48:09");
     Ok(())
 }

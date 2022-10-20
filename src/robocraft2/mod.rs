@@ -8,4 +8,4 @@ mod factory_json;
 pub use factory_json::{SearchPayload, SearchResponse, SearchResponseItem, RobotInfo, RobotPrice};
 
 mod portal;
-pub use self::portal::PortalTokenProvider;
+pub use self::portal::{PortalTokenProvider, AccountInfo, PortalCheckResponse, ITokenProvider};

@@ -31,12 +31,12 @@ async fn robocraft_factory_default_query() -> Result<(), ()> {
     Ok(())
 }
 
-#[cfg(feature = "robocraft")]
+#[cfg(feature = "robocraft2")]
 #[tokio::test]
 async fn robocraft2_factory_default_query() -> Result<(), ()> {
-    let api = robocraft2::FactoryAPI::with_auth(Box::new(robocraft2::PortalTokenProvider::portal().unwrap()));
+    let api = robocraft2::FactoryAPI::with_auth(Box::new(robocraft2::PortalTokenProvider::with_username("FJAPIC00L", "P4$$w0rd").await.unwrap()));
     let result = api.list().await;
-    //assert!(result.is_ok());
+    assert!(result.is_ok());
     let robo_info = result.unwrap();
     assert_ne!(robo_info.results.len(), 0);
     for robot in &robo_info.results {
