@@ -47,7 +47,7 @@ async fn handle_json_response<D: for<'a> serde::Deserialize<'a>>(response: Respo
 /// CRF API implementation
 pub struct FactoryAPI {
     client: Client,
-    token: Mutex<Box<dyn ITokenProvider>>,
+    token: Mutex<Box<dyn ITokenProvider + Send>>,
 }
 
 impl FactoryAPI {
@@ -60,7 +60,7 @@ impl FactoryAPI {
     }*/
 
     /// Create a new instance using the provided token provider.
-    pub fn with_auth(token_provider: Box<dyn ITokenProvider>) -> FactoryAPI {
+    pub fn with_auth(token_provider: Box<dyn ITokenProvider + Send>) -> FactoryAPI {
         FactoryAPI {
             client: Client::new(),
             token: Mutex::new(token_provider),
