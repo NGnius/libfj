@@ -248,9 +248,13 @@ impl FactorySearchBuilder {
             self.reqwest_builder = self.reqwest_builder.header("Authorization", "Web ".to_owned() + &token);
         }
         let result = self.reqwest_builder.send().await;
-        if let Ok(response) = result {
-            return response.json::<FactoryInfo<RoboShopItemsInfo>>().await;
+        //dbg!(&result);
+        match result {
+            Ok(response) => {
+                response.error_for_status()?
+                    .json::<FactoryInfo<RoboShopItemsInfo>>().await
+            }
+            Err(e) => Err(e),
         }
-        Err(result.err().unwrap())
     }
 }

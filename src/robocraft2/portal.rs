@@ -6,6 +6,9 @@ use reqwest::{Client, Error};
 use serde_json::from_slice;
 use chrono::{DateTime, naive::NaiveDateTime, Utc};
 
+const GAME_VERSION: &str = "100.0"; // currently, this accepts any version >= current public release
+const GAME_TARGET: &str = "Techblox";
+
 /// Token generator for authenticated API endpoints
 #[async_trait::async_trait]
 pub trait ITokenProvider {
@@ -25,16 +28,18 @@ pub struct PortalTokenProvider {
     client: Client,
     /// target game
     target: String,
+    /// game version
+    version: String,
 }
 
 impl PortalTokenProvider {
     /// Login through the web browser portal
     pub async fn portal() -> Result<Self, Error> {
-        Self::target("Techblox".to_owned()).await
+        Self::target(GAME_TARGET.to_owned(), GAME_VERSION.to_owned()).await
     }
 
     /// Login through the portal with a custom target value
-    pub async fn target(value: String) -> Result<Self, Error> {
+    pub async fn target(value: String, version: String) -> Result<Self, Error> {
         let client = Client::new();
         let payload = PortalStartPayload {
             target: value.clone(),
@@ -65,7 +70,7 @@ impl PortalTokenProvider {
         let check_res = check_response.json::<PortalCheckResponse>().await?;
 
         // login with token we just got
-       Self::login_internal(check_res, client, value).await
+       Self::login_internal(check_res, client, value, version).await
     }
 
     pub async fn with_email(email: &str, password: &str) -> Result<Self, Error> {
@@ -79,7 +84,7 @@ impl PortalTokenProvider {
             .json(&payload)
             .send().await?;
         let json_res = response.json::<AuthenticationResponseInfo>().await?;
-        Self::auto_portal(client, "Techblox".to_owned(), json_res.token).await
+        Self::auto_portal(client, GAME_TARGET.to_owned(), json_res.token, GAME_VERSION.to_owned()).await
     }
 
     pub async fn with_username(username: &str, password: &str) -> Result<Self, Error> {
@@ -93,11 +98,11 @@ impl PortalTokenProvider {
             .json(&payload)
             .send().await?;
         let json_res = response.json::<AuthenticationResponseInfo>().await?;
-        Self::auto_portal(client, "Techblox".to_owned(), json_res.token).await
+        Self::auto_portal(client, GAME_TARGET.to_owned(), json_res.token, GAME_VERSION.to_owned()).await
     }
 
     /// Automatically validate portal
-    async fn auto_portal(client: Client, value: String, token: String) -> Result<Self, Error> {
+    async fn auto_portal(client: Client, value: String, token: String, version: String) -> Result<Self, Error> {
         let payload = PortalStartPayload {
             target: value.clone(),
         };
@@ -106,7 +111,6 @@ impl PortalTokenProvider {
             .json(&payload)
             .send().await?;
         let start_res = start_response.json::<PortalStartResponse>().await?;
-
         let payload = PortalCheckPayload {
             token: start_res.token,
         };
@@ -124,22 +128,24 @@ impl PortalTokenProvider {
         let check_res = check_response.json::<PortalCheckResponse>().await?;
 
         // login with token we just got
-       Self::login_internal(check_res, client, value).await
+       Self::login_internal(check_res, client, value, version).await
     }
 
-    async fn login_internal(token_data: PortalCheckResponse, client: Client, target: String) -> Result<Self, Error> {
-        let progress_res = Self::login_step(&token_data, &client).await?;
+    async fn login_internal(token_data: PortalCheckResponse, client: Client, target: String, version: String) -> Result<Self, Error> {
+        let progress_res = Self::login_step(&token_data, &client, version.clone()).await?;
         Ok(Self {
             token: progress_res,
             jwt: token_data,
             client: client,
             target: target,
+            version: version,
         })
     }
 
-    async fn login_step(token_data: &PortalCheckResponse, client: &Client) -> Result<ProgressionLoginResponse, Error> {
+    async fn login_step(token_data: &PortalCheckResponse, client: &Client, version: String) -> Result<ProgressionLoginResponse, Error> {
         let payload = ProgressionLoginPayload {
             token: token_data.token.clone(),
+            client_version: version,
         };
         let progress_response = client.post("https://progression.production.robocraft2.com/login/fj")
             .header("Content-Type", "application/json")
@@ -149,8 +155,8 @@ impl PortalTokenProvider {
     }
 
     /// Login using the portal token data from a previous portal authentication
-    pub async fn login(token_data: PortalCheckResponse, target: String) -> Result<Self, Error> {
-        Self::login_internal(token_data, Client::new(), target).await
+    pub async fn login(token_data: PortalCheckResponse, target: String, version: String) -> Result<Self, Error> {
+        Self::login_internal(token_data, Client::new(), target, version).await
     }
 
     pub fn get_account_info(&self) -> Result<AccountInfo, Error> {
@@ -182,9 +188,10 @@ impl ITokenProvider for PortalTokenProvider {
                 .json(&payload)
                 .send().await?;
             self.jwt = refresh_response.json::<PortalCheckResponse>().await?;
-            self.token = Self::login_step(&self.jwt, &self.client).await?;
+            self.token = Self::login_step(&self.jwt, &self.client, self.version.clone()).await?;
         }
         Ok(self.token.token.clone().unwrap())
+        //Ok(self.jwt.token.clone())
     }
 }
 
@@ -220,7 +227,7 @@ pub(crate) struct PortalStartPayload {
     pub target: String,
 }
 
-#[derive(Deserialize, Serialize, Clone)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub(crate) struct PortalStartResponse {
     #[serde(rename = "Token")]
     pub token: String,
@@ -255,11 +262,13 @@ impl PortalCheckResponse {
 
 #[derive(Deserialize, Serialize, Clone)]
 pub(crate) struct ProgressionLoginPayload {
-    #[serde(rename = "token")]
+    #[serde(rename = "Token")]
     pub token: String,
+    #[serde(rename = "ClientVersion")]
+    pub client_version: String,
 }
 
-#[derive(Deserialize, Serialize, Clone)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub(crate) struct ProgressionLoginResponse {
     #[serde(rename = "success")]
     pub success: bool,
@@ -282,7 +291,7 @@ pub(crate) struct RefreshTokenPayload {
 }
 
 /// Robocraft2 account information.
-#[derive(Deserialize, Serialize, Clone)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct AccountInfo {
     /// User's public ID
     #[serde(rename = "PublicId")]
