@@ -244,3 +244,25 @@ pub struct GetRobotResponse {
     #[serde(rename = "created")]
     pub created: String, // date
 }
+
+// moderate robot endpoint
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct ModerateRobotPayload {
+    #[serde(rename = "approve")]
+    pub approve: bool,
+    #[serde(rename = "reason")]
+    pub reason: String,
+}
+
+// (no response)
+
+// report robot endpoint
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct ReportRobotPayload {
+    #[serde(rename = "reason")]
+    pub reason: String,
+}
+
+// (no response)

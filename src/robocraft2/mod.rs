@@ -5,7 +5,7 @@ mod factory;
 pub use factory::{FactoryAPI, FactoryError};
 
 mod factory_json;
-pub use factory_json::{ErrorPayload, SearchPayload, SearchResponse, SearchResponseItem, RobotInfo, RobotPrice, CreateRobotPayload, CreateRobotResponse, FactoryInfoResponse, PublishRobotPayload, PublishRobotResponse, MyRobotsResponse, GetRobotResponse};
+pub use factory_json::{ErrorPayload, SearchPayload, SearchResponse, SearchResponseItem, RobotInfo, RobotPrice, CreateRobotPayload, CreateRobotResponse, FactoryInfoResponse, PublishRobotPayload, PublishRobotResponse, MyRobotsResponse, GetRobotResponse, ModerateRobotPayload, ReportRobotPayload};
 
 mod portal;
 pub use self::portal::{PortalTokenProvider, AccountInfo, PortalCheckResponse, ITokenProvider};

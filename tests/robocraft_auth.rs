@@ -1,6 +1,6 @@
 #[cfg(feature = "robocraft")]
 use libfj::robocraft;
-#[cfg(feature = "robocraft")]
+#[cfg(feature = "robocraft2")]
 use libfj::robocraft2;
 #[cfg(feature = "robocraft")]
 use libfj::robocraft::ITokenProvider;
@@ -49,9 +49,7 @@ async fn robocraft2_account() -> Result<(), ()> {
     Ok(())
 }
 
-// this requires human-interaction so it's disabled by default
 #[cfg(feature = "robocraft2")]
-#[allow(dead_code)]
 #[tokio::test]
 async fn robocraft2_simple_account() -> Result<(), ()> {
     let token_maybe = robocraft2::PortalTokenProvider::with_username("FJAPIC00L", "P4$$w0rd").await;

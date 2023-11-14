@@ -4,7 +4,7 @@ use reqwest::{Client, Error as ReqwestError, Response};
 use url::{Url};
 
 use crate::robocraft2::{ITokenProvider, ErrorPayload};
-use crate::robocraft2::{SearchPayload, SearchResponse, CreateRobotPayload, CreateRobotResponse, FactoryInfoResponse, PublishRobotPayload, PublishRobotResponse, MyRobotsResponse, GetRobotResponse};
+use crate::robocraft2::{SearchPayload, SearchResponse, CreateRobotPayload, CreateRobotResponse, FactoryInfoResponse, PublishRobotPayload, PublishRobotResponse, MyRobotsResponse, GetRobotResponse, ModerateRobotPayload, ReportRobotPayload};
 
 /// Community Factory Robot 2 root URL
 pub const FACTORY_DOMAIN: &str = "https://factory.production.robocraft2.com";
@@ -253,5 +253,35 @@ impl FactoryAPI {
             .send().await
             .map_err(FactoryError::Protocol)?;
         handle_json_response::<GetRobotResponse>(result).await
+    }
+
+    pub async fn moderate(&self, payload: ModerateRobotPayload, id: String) -> Result<(), FactoryError> {
+        let url = Url::parse(FACTORY_DOMAIN)
+            .unwrap()
+            .join(&format!("/v1/foundry/vehicles/{}/moderate", id))
+            .unwrap();
+        let token = self.token.lock().unwrap().token().await.map_err(FactoryError::Protocol)?;
+        let _result = self.client.post(url)
+            .header("Authorization", "Bearer ".to_owned() + &token)
+            .header("Content-Type", "application/json")
+            .json(&payload)
+            .send().await
+            .map_err(FactoryError::Protocol)?;
+        Ok(())
+    }
+
+    pub async fn report(&self, payload: ReportRobotPayload, id: String) -> Result<(), FactoryError> {
+        let url = Url::parse(FACTORY_DOMAIN)
+            .unwrap()
+            .join(&format!("/v1/foundry/vehicles/{}/report", id))
+            .unwrap();
+        let token = self.token.lock().unwrap().token().await.map_err(FactoryError::Protocol)?;
+        let _result = self.client.post(url)
+            .header("Authorization", "Bearer ".to_owned() + &token)
+            .header("Content-Type", "application/json")
+            .json(&payload)
+            .send().await
+            .map_err(FactoryError::Protocol)?;
+        Ok(())
     }
 }
