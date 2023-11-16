@@ -35,8 +35,7 @@ async fn robocraft2_factory_report() -> Result<(), ()> {
 }
 
 #[cfg(feature = "robocraft2")]
-//#[tokio::test]
-#[allow(dead_code)]
+#[tokio::test]
 async fn robocraft2_factory_default_query() -> Result<(), ()> {
     let api = builder().await;
     let result = api.list().await;
@@ -47,9 +46,29 @@ async fn robocraft2_factory_default_query() -> Result<(), ()> {
         assert_ne!(robot.robot.name, "");
         assert_ne!(robot.robot.creator_id, "");
         assert_ne!(robot.robot.creator_id, "");
-        assert_ne!(robot.robot.image, "");
         //println!("RobotInfo.to_string() -> `{}`", robot.robot.to_string());
         println!("SearchResponseItem {}", serde_json::to_string_pretty(&robot).unwrap());
+    }
+    Ok(())
+}
+
+#[cfg(feature = "robocraft2")]
+#[tokio::test]
+async fn robocraft2_factory_sort() -> Result<(), ()> {
+    let api = builder().await;
+    let mut query = robocraft2::SearchPayload::default();
+    query.sort_by = robocraft2::sort::DEFAULT;
+    query.order_by = robocraft2::order::ASCENDING;
+    let result = api.search(query).await;
+    let robo_info = unwrap_factory2(result);
+    assert_ne!(robo_info.results.len(), 0);
+    for robot in &robo_info.results {
+        assert_ne!(robot.robot.name, "");
+        assert_ne!(robot.robot.creator_id, "");
+        assert_ne!(robot.robot.creator_id, "");
+        //println!("RobotInfo.to_string() -> `{}`", robot.robot.to_string());
+        //println!("SearchResponseItem {}", serde_json::to_string_pretty(&robot).unwrap());
+        println!("date: {}", robot.robot.created);
     }
     Ok(())
 }
@@ -138,7 +157,8 @@ async fn robocraft2_factory_my_bots() -> Result<(), ()> {
         assert_ne!(robot.name, "");
         assert_ne!(robot.creator_id, "");
         assert_ne!(robot.creator_id, "");
-        assert_ne!(robot.image, "");
+        assert_ne!(robot.image, None);
+        assert_ne!(robot.image.as_ref().unwrap(), "");
         println!("My bot `{}`", robot.to_string());
         //println!("my vehicle {}", serde_json::to_string_pretty(&robot).unwrap());
     }
@@ -157,7 +177,8 @@ async fn robocraft2_factory_my_published_bots() -> Result<(), ()> {
         assert_ne!(robot.name, "");
         assert_ne!(robot.creator_id, "");
         assert_ne!(robot.creator_id, "");
-        assert_ne!(robot.image, "");
+        assert_ne!(robot.image, None);
+        assert_ne!(robot.image.as_ref().unwrap(), "");
         println!("My pub bot `{}`", robot.to_string());
         //println!("pub vehicle {}", serde_json::to_string_pretty(&robot).unwrap());
     }

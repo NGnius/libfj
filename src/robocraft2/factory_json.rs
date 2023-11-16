@@ -1,5 +1,37 @@
 use serde::{Deserialize, Serialize};
 
+pub mod order {
+    pub const ASCENDING: &str = "ascending";
+    pub const DESCENDING: &str = "descending";
+    pub(super) fn default() -> &'static str {
+        ASCENDING
+    }
+}
+
+pub mod sort {
+    pub const CPU_POWER: &str = "cpuPower";
+    pub const FIRE_POWER: &str = "firePower";
+    pub const ENGINE_POWER: &str = "enginePower";
+    pub const PRICE: &str = "price";
+    pub const DATE: &str = "date";
+    pub const CLUSTER_COUNT: &str = "clusterCount";
+    pub const VIEWS: &str = "views";
+    pub const MOST_PURCHASED: &str = "mostPurchased";
+    pub const DEFAULT: &str = "default";
+    pub(super) fn default() -> &'static str {
+        DEFAULT
+    }
+}
+
+pub mod moderation {
+    pub const NO_FILTER: &str = "none";
+    pub const NEEDS_MODERATION: &str = "needsModeration";
+    pub const MODERATED: &str = "moderatedOnly";
+    pub(super) fn default() -> &'static str {
+        NO_FILTER
+    }
+}
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct ErrorPayload {
     #[serde(rename = "error")]
@@ -34,16 +66,20 @@ pub struct SearchPayload {
     pub date_minimum: Option<String>,
     #[serde(rename = "dateMaximum")]
     pub date_maximum: Option<String>,
+    #[serde(rename = "purchasedOnly")]
+    pub purchased_only: Option<bool>,
     #[serde(rename = "creatorId")]
     pub creator_id: Option<String>, // GUID
     #[serde(rename = "page")]
     pub page: Option<isize>,
     #[serde(rename = "count")]
     pub count: Option<isize>,
-    #[serde(rename = "sortBy")]
-    pub sort_by: String,
-    #[serde(rename = "orderBy")]
-    pub order_by: String,
+    #[serde(rename = "sortBy", default="sort::default")]
+    pub sort_by: &'static str,
+    #[serde(rename = "orderBy", default="order::default")]
+    pub order_by: &'static str,
+    #[serde(rename = "modFilter", default="moderation::default")]
+    pub moderation_filter: &'static str,
 }
 
 impl Default for SearchPayload {
@@ -60,11 +96,13 @@ impl Default for SearchPayload {
             cluster_maximum: None,
             date_minimum: None,
             date_maximum: None,
+            purchased_only: None,
             creator_id: None,
             page: None,
             count: None,
-            sort_by: "default".to_owned(),
-            order_by: "ascending".to_owned(),
+            sort_by: sort::DEFAULT,
+            order_by: order::ASCENDING,
+            moderation_filter: moderation::NO_FILTER,
         }
     }
 }
@@ -98,7 +136,7 @@ pub struct RobotInfo {
     #[serde(rename = "created")]
     pub created: String, // date
     #[serde(rename = "image")]
-    pub image: String, // base64??
+    pub image: Option<String>, // url
     #[serde(rename = "baseCpu")]
     pub base_cpu: isize,
     #[serde(rename = "weaponCpu")]

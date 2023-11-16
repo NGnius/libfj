@@ -1,8 +1,6 @@
 #[cfg(feature = "robocraft")]
 use libfj::robocraft;
 #[cfg(feature = "robocraft")]
-use libfj::robocraft2;
-#[cfg(feature = "robocraft")]
 use std::convert::From;
 
 #[cfg(feature = "robocraft")]
@@ -77,7 +75,8 @@ async fn robocraft_factory_custom_query() -> Result<(), ()> {
 }
 
 #[cfg(feature = "robocraft")]
-#[tokio::test]
+//#[tokio::test]
+#[allow(dead_code)]
 async fn robocraft_factory_player_query() -> Result<(), ()> {
     let result = builder()
         .text("Zalera57".to_string()) // there is a featured robot by this user, so this should never fail

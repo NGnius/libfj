@@ -111,6 +111,9 @@ impl FactoryAPI {
         if let Some(x) = &params.date_maximum {
             url.query_pairs_mut().append_pair("dateMaximum", x);
         }
+        if let Some(x) = &params.purchased_only {
+            url.query_pairs_mut().append_pair("purchasedOnly", if *x { "true" } else { "false" });
+        }
         if let Some(x) = &params.creator_id {
             url.query_pairs_mut().append_pair("creatorId", x);
         }
@@ -122,11 +125,14 @@ impl FactoryAPI {
         }
         url.query_pairs_mut().append_pair("sortBy", &params.sort_by);
         url.query_pairs_mut().append_pair("orderBy", &params.order_by);
+        url.query_pairs_mut().append_pair("modFilter", &params.moderation_filter);
         let token = self.token.lock().unwrap().token().await.map_err(FactoryError::Protocol)?;
         let result = self.client.get(url)
             .header("Authorization", "Bearer ".to_owned() + &token)
             .send().await
             .map_err(FactoryError::Protocol)?;
+        //println!("result: {}", result.text().await.map_err(FactoryError::Protocol)?);
+        //todo!()
         handle_json_response::<SearchResponse>(result).await
     }
 
