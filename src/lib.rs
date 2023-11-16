@@ -15,3 +15,5 @@ pub mod techblox;
 pub mod convert;
 #[cfg(feature = "robocraft2")]
 pub mod robocraft2;
+
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
