@@ -121,6 +121,8 @@ pub struct SearchResponseItem {
     pub prices: Vec<RobotPrice>,
     #[serde(rename = "purchased")]
     pub purchased: bool,
+    #[serde(rename = "downloaded")]
+    pub downloaded: bool,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
@@ -129,6 +131,8 @@ pub struct RobotInfo {
     pub id: String, // GUID
     #[serde(rename = "name")]
     pub name: String,
+    #[serde(rename = "parentId")]
+    pub parent_id: Option<String>, // GUID?
     #[serde(rename = "creatorId")]
     pub creator_id: String, // GUID
     #[serde(rename = "creatorName")]
@@ -161,6 +165,15 @@ pub struct RobotInfo {
     pub maximum_offset_y: f64,
     #[serde(rename = "maximumOffsetZ")]
     pub maximum_offset_z: f64,
+    // TODO additional fields
+    // these seem to always be null so it is not worth deserializing them
+    // and adding some placeholder type might cause them to break in the future
+    // #[serde(rename = "colourPallet")]
+    // #[serde(rename = "materialPalette")]
+    // #[serde(rename = "materialPalette")]
+    // #[serde(rename = "cosmeticBlockVariantPalette")]
+    #[serde(rename = "version")]
+    pub version: usize,
 }
 
 impl std::string::ToString for RobotInfo {
@@ -281,6 +294,8 @@ pub struct GetRobotResponse {
     pub description: String,
     #[serde(rename = "created")]
     pub created: String, // date
+    #[serde(rename = "moderated")]
+    pub moderated: bool,
 }
 
 // moderate robot endpoint

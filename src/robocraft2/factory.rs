@@ -132,8 +132,8 @@ impl FactoryAPI {
             .send().await
             .map_err(FactoryError::Protocol)?;
         //println!("result: {}", result.text().await.map_err(FactoryError::Protocol)?);
-        //todo!()
         handle_json_response::<SearchResponse>(result).await
+        //Err(FactoryError::Response(ErrorPayload { error: -42, error_message: "Disabled on purpose".to_owned() }))
     }
 
     pub async fn create_robot(&self, robot: CreateRobotPayload) -> Result<CreateRobotResponse, FactoryError> {
@@ -219,7 +219,9 @@ impl FactoryAPI {
             .header("Authorization", "Bearer ".to_owned() + &token)
             .send().await
             .map_err(FactoryError::Protocol)?;
+        //println!("result: {}", result.text().await.map_err(FactoryError::Protocol)?);
         handle_json_response::<FactoryInfoResponse>(result).await
+        //Err(FactoryError::Response(ErrorPayload { error: -42, error_message: "Disabled on purpose".to_owned() }))
     }
 
     pub async fn my_robots(&self) -> Result<MyRobotsResponse, FactoryError> {
@@ -258,7 +260,9 @@ impl FactoryAPI {
             .header("Authorization", "Bearer ".to_owned() + &token)
             .send().await
             .map_err(FactoryError::Protocol)?;
+        //println!("result: {}", result.text().await.map_err(FactoryError::Protocol)?);
         handle_json_response::<GetRobotResponse>(result).await
+        //Err(FactoryError::Response(ErrorPayload { error: -42, error_message: "Disabled on purpose".to_owned() }))
     }
 
     pub async fn moderate(&self, payload: ModerateRobotPayload, id: String) -> Result<(), FactoryError> {

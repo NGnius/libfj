@@ -54,10 +54,22 @@ async fn robocraft2_factory_default_query() -> Result<(), ()> {
 
 #[cfg(feature = "robocraft2")]
 #[tokio::test]
+#[allow(dead_code)]
+async fn robocraft2_factory_info_query() -> Result<(), ()> {
+    let api = builder().await;
+    let result = api.get("08dadf8d-1953-44bc-8d49-c432f6640723".to_owned()).await;
+    assert!(result.is_ok());
+    let robo_info = unwrap_factory2(result);
+    println!("GetRobotResponse {}", serde_json::to_string_pretty(&robo_info).unwrap());
+    Ok(())
+}
+
+#[cfg(feature = "robocraft2")]
+#[tokio::test]
 async fn robocraft2_factory_sort() -> Result<(), ()> {
     let api = builder().await;
     let mut query = robocraft2::SearchPayload::default();
-    query.sort_by = robocraft2::sort::DEFAULT;
+    query.sort_by = robocraft2::sort::DATE;
     query.order_by = robocraft2::order::ASCENDING;
     let result = api.search(query).await;
     let robo_info = unwrap_factory2(result);
@@ -70,6 +82,7 @@ async fn robocraft2_factory_sort() -> Result<(), ()> {
         //println!("SearchResponseItem {}", serde_json::to_string_pretty(&robot).unwrap());
         println!("date: {}", robot.robot.created);
     }
+    println!("first url: {}", robo_info.results[0].robot.image.as_ref().unwrap());
     Ok(())
 }
 
