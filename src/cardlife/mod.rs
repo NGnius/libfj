@@ -14,4 +14,4 @@ mod live;
 mod live_json;
 pub use self::live::{LiveAPI, AUTHENTICATION_DOMAIN, LOBBY_DOMAIN};
 pub use self::live_json::{AuthenticationInfo, LobbyInfo, LiveGameInfo};
-pub use self::live_json::{AuthenticationPayload, LobbyPayload};
+pub use self::live_json::{AuthenticationPayload, LobbyPayload, SteamAuthenticationPayload, TokenPayload, TempGetUserIdPayload, TempGetUserIdResponse};

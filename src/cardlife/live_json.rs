@@ -8,6 +8,40 @@ pub struct AuthenticationPayload {
     pub password: String,
 }
 
+#[derive(Deserialize, Serialize, Clone)]
+pub struct SteamAuthenticationPayload {
+    #[serde(rename = "SteamTicket")]
+    pub steam_ticket: String,
+    #[serde(rename = "Demo")]
+    pub demo: bool,
+}
+
+#[derive(Deserialize, Serialize, Clone)]
+pub struct TokenPayload {
+    #[serde(rename = "PublicID")] // [sic] compared to AuthenticationInfo's PublidId
+    pub public_id: String,
+    #[serde(rename = "Token")]
+    pub token: String,
+}
+
+#[derive(Deserialize, Serialize, Clone)]
+pub struct TempGetUserIdPayload {
+    #[serde(rename = "publicId")] // [sic] yay consistency
+    pub public_id: String,
+    #[serde(rename = "token")]
+    pub token: String,
+}
+
+#[derive(Deserialize, Serialize, Clone)]
+pub struct TempGetUserIdResponse {
+    #[serde(rename = "publicId")] // [sic] yay consistency
+    pub public_id: String,
+    #[serde(rename = "token")]
+    pub token: String,
+    #[serde(rename = "userId")]
+    pub user_id: i32,
+}
+
 /// Authentication information
 #[derive(Deserialize, Serialize, Clone)]
 pub struct AuthenticationInfo {
@@ -22,10 +56,10 @@ pub struct AuthenticationInfo {
     pub display_name: String,
     /// Account purchases (???)
     #[serde(rename = "Purchases")]
-    purchases: Vec<usize>, // ???
+    pub purchases: Vec<usize>, // ???
     /// Account flags (dev, admin, etc.???)
     #[serde(rename = "Flags")]
-    flags: Vec<String>, // ???
+    pub flags: Vec<String>, // ???
     /// Is confirmed account?
     #[serde(rename = "Confirmed")]
     pub confirmed: bool,
@@ -36,10 +70,10 @@ pub struct AuthenticationInfo {
     ///
     /// Since Steam users cannot be authenticated using this lib, this will always be blank or None
     #[serde(rename = "SteamId")]
-    steam_id: Option<String>, // ???
+    pub steam_id: Option<String>, // ???
     /// User ID
     #[serde(rename = "ID")]
-    pub id: usize,
+    pub id: i32,
 }
 
 impl std::string::ToString for AuthenticationInfo {
