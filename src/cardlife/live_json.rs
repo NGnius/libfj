@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Clone)]
-pub(crate) struct AuthenticationPayload {
+pub struct AuthenticationPayload {
     #[serde(rename = "EmailAddress")]
     pub email_address: String,
     #[serde(rename = "Password")]
@@ -49,7 +49,7 @@ impl std::string::ToString for AuthenticationInfo {
 }
 
 #[derive(Deserialize, Serialize, Clone)]
-pub(crate) struct LobbyPayload {
+pub struct LobbyPayload {
     #[serde(rename = "PublicId")]
     pub public_id: String,
 }

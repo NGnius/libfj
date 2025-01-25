@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use ureq::{Agent, Error};
 use serde_json::{to_string, from_slice};
+use base64::Engine;
 
 use crate::robocraft::ITokenProvider;
 
@@ -101,7 +102,7 @@ impl AuthenticationResponseInfo {
         // header is before dot, signature is after dot.
         // data is sandwiched in the middle, and it's all we care about
         let data = self.token.split(".").collect::<Vec<&str>>()[1];
-        let data_vec = base64::decode(data).unwrap();
+        let data_vec = base64::engine::general_purpose::STANDARD.decode(data).unwrap();
         from_slice::<AccountInfo>(&data_vec).unwrap()
     }
 }

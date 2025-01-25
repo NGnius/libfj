@@ -1,5 +1,5 @@
-use base64::{decode_config_buf, STANDARD};
 use std::io::Read;
+use base64::Engine;
 
 // TODO(maybe) parse iteratively instead of one-shot
 
@@ -203,10 +203,8 @@ impl std::default::Default for Cube {
 
 impl std::convert::From<crate::robocraft::FactoryRobotGetInfo> for Cubes {
     fn from(other: crate::robocraft::FactoryRobotGetInfo) -> Self {
-        let mut cube_buf = Vec::new();
-        let mut colour_buf = Vec::new();
-        decode_config_buf(other.cube_data, STANDARD, &mut cube_buf).unwrap();
-        decode_config_buf(other.colour_data, STANDARD, &mut colour_buf).unwrap();
+        let mut cube_buf = base64::engine::general_purpose::STANDARD.decode(other.cube_data).unwrap();
+        let mut colour_buf = base64::engine::general_purpose::STANDARD.decode(other.colour_data).unwrap();
         Self::parse(&mut cube_buf, &mut colour_buf).unwrap()
     }
 }

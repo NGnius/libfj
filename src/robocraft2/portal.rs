@@ -4,7 +4,8 @@ use reqwest::{Client, Error};
 //use cookie_store::CookieStore;
 //use url::{Url};
 use serde_json::from_slice;
-use chrono::{DateTime, naive::NaiveDateTime, Utc};
+use chrono::{DateTime, Utc};
+use base64::Engine;
 
 const GAME_VERSION: &str = "100.0"; // currently, this accepts any version >= current public release
 const GAME_TARGET: &str = "Techblox";
@@ -172,7 +173,7 @@ impl PortalTokenProvider {
 impl ITokenProvider for PortalTokenProvider {
     async fn token(&mut self) -> Result<String, Error> {
         let decoded_jwt = self.jwt.decode_jwt_data();
-        let expiry = DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(decoded_jwt.exp as i64, 0), Utc);
+        let expiry = DateTime::<Utc>::from_timestamp(decoded_jwt.exp as i64, 0).unwrap();
         let now = Utc::now();
         if now >= expiry || self.token.token.is_none() {
             // refresh token when expired
@@ -255,7 +256,7 @@ impl PortalCheckResponse {
         // header is before dot, signature is after dot.
         // data is sandwiched in the middle, and it's all we care about
         let data = self.token.split(".").collect::<Vec<&str>>()[1];
-        let data_vec = base64::decode(data).unwrap();
+        let data_vec = base64::engine::general_purpose::STANDARD.decode(data).unwrap();
         from_slice::<AccountInfo>(&data_vec).unwrap()
     }
 }

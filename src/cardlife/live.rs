@@ -3,8 +3,8 @@ use url::{Url};
 
 use crate::cardlife::{AuthenticationInfo, AuthenticationPayload, LobbyInfo, LobbyPayload};
 
-const AUTHENTICATION_DOMAIN: &str = "https://live-auth.cardlifegame.com/";
-const LOBBY_DOMAIN: &str = "https://live-lobby.cardlifegame.com/";
+pub const AUTHENTICATION_DOMAIN: &str = "https://live-auth.cardlifegame.com/";
+pub const LOBBY_DOMAIN: &str = "https://live-lobby.cardlifegame.com/";
 
 /// Cardlife live information API
 pub struct LiveAPI {

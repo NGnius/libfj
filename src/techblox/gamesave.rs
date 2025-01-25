@@ -74,7 +74,7 @@ impl Parsable for GameSave {
         let year = parse_u32(data)?; // parsed as i32 in-game for some reason
         let month = parse_u32(data)?;
         let day = parse_u32(data)?;
-        let date = NaiveDate::from_ymd(year as i32, month, day);
+        let date = NaiveDate::from_ymd_opt(year as i32, month, day).unwrap();
         let ticks = parse_i64(data)?; // unused
         let cube_count = parse_u32(data)?; // parsed as i32 in-game for some reason
         let max_e_id = parse_u32(data)?; // unused

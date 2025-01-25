@@ -1,6 +1,6 @@
 [package]
 name = "libfj"
-version = "0.7.4"
+version = "0.7.5"
 authors = ["NGnius (Graham) <ngniusness@gmail.com>"]
 edition = "2018"
 description = "An unofficial collection of APIs used in FreeJam games and mods"
@@ -16,22 +16,22 @@ exclude = [
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { version = "^1", features = ["derive"]}
-serde_json = "^1"
-reqwest = { version = "^0.11", features = ["json", "rustls-tls"], optional = true, default-features=false}
-url = "^2.2"
-ureq = { version = "^2", features = ["json"], optional = true}
+serde = { version = "1", features = ["derive"]}
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], optional = true, default-features=false}
+url = "2"
+ureq = { version = "2", features = ["json"], optional = true}
 async-trait = { version = "0.1", optional = true }
-base64 = "^0.13"
-num_enum = "^0.5"
-chrono = {version = "^0.4", optional = true}
+base64 = "0.22"
+num_enum = "0.5"
+chrono = {version = "0.4", optional = true}
 highhash = {version = "^0.1", optional = true}
-half = {version = "^1.7", optional = true}
+half = {version = "2", optional = true}
 libfj_parsable_macro_derive = {version = "0.5.3", optional = true}
 #libfj_parsable_macro_derive = {path = "./parsable_macro_derive", optional = true}
-obj = {version = "^0.10", optional = true}
-genmesh = {version = "^0.6", optional = true}
-cgmath = {version = "^0.18", optional = true}
+obj = {version = "0.10", optional = true}
+genmesh = {version = "0.6", optional = true}
+cgmath = {version = "0.18", optional = true}
 
 [dev-dependencies]
 tokio = { version = "1.4.0", features = ["macros"]}
